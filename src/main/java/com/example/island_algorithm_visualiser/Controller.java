@@ -26,24 +26,9 @@ public class Controller implements Initializable {
     @FXML
     private Button button1;
 
-    // Constructs a timeline of keyframes, which form an animation.
     @FXML
     void visualize(MouseEvent event) {
-
-        Timeline timeline = new Timeline();
-        int duration = 25;
-
-        // each keyframe is offset from t = 0, by an increasing factor 'i'.
-        for (int i = 0; i < grid.getTileAmount(); i++) {
-
-            final int x = i % grid.getTilesAcross();
-            final int y = i / grid.getTilesAcross();
-            KeyFrame keyFrame = new KeyFrame(Duration.millis(duration * i), e -> {
-                gridHandler.compute(x,y);
-            });
-            timeline.getKeyFrames().add(keyFrame);
-        }
-        timeline.play();
+        gridHandler.visualize();
     }
 
     @Override
