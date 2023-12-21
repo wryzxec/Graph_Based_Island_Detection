@@ -1,8 +1,11 @@
 package com.example.island_algorithm_visualiser;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.util.Duration;
 
 import java.util.Random;
 
@@ -21,7 +24,7 @@ public class GridHandler extends Grid {
                 Random rnd = new Random();
                 int num = rnd.nextInt(4);
 
-                Rectangle rectangle = new Rectangle(i * getGridSize(), j * getGridSize(), getGridSize(), getGridSize());
+                Rectangle rectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
                 rectangle.setId(Integer.toString(i)+Integer.toString(j));
 
                 if(num == 1){
@@ -39,10 +42,29 @@ public class GridHandler extends Grid {
 
         Rectangle rectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
         if(getValues()[i][j] == 1){
-            Rectangle newRectangle = new Rectangle(i * getGridSize(), j * getGridSize(), getGridSize(), getGridSize());
+            Rectangle newRectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
             newRectangle.setStyle("-fx-fill: red; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
             getAnchorPane().getChildren().remove(rectangle);
             getAnchorPane().getChildren().add(newRectangle);
         }
+    }
+
+    public void visualize(){
+
+        Timeline timeline = new Timeline();
+        int duration = 25;
+
+        for(int i = 0; i < getTilesDown(); i++){
+            for(int j = 0; j < getTilesAcross(); j++){
+                int x = i;
+                int y = j;
+
+                KeyFrame keyFrame = new KeyFrame(Duration.millis(duration * (i*getTilesAcross() + j)), e -> {
+                    compute(x,y);
+                });
+                timeline.getKeyFrames().add(keyFrame);
+            }
+        }
+        timeline.play();
     }
 }
