@@ -24,11 +24,19 @@ public class Controller implements Initializable {
     @FXML
     private AnchorPane pane;
     @FXML
-    private Button button1;
+    private Button start_button;
 
     @FXML
     void visualize(MouseEvent event) {
         gridHandler.visualize();
+    }
+
+    @FXML
+    void generate(MouseEvent event) {
+        values = new int[gridSize][gridSize];
+        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values);
+        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values);
+        gridHandler.initializeGrid();
     }
 
     @Override
