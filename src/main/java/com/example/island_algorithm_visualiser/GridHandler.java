@@ -18,24 +18,52 @@ public class GridHandler extends Grid {
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values){
         super(width, height, gridSize, anchorPane, values);
     }
-    
-    public void initializeGrid(){
+
+    public void generateIsland(int i, int j){
+
+        if(i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross() || getValues()[i][j] == 1){
+            return;
+        }
+        getValues()[i][j] = 1;
+
+        Random rnd = new Random();
+        if(rnd.nextDouble() < 0.4){
+            generateIsland(i+1, j);
+            generateIsland(i-1, j);
+            generateIsland(i, j+1);
+            generateIsland(i, j-1);
+        }
+    }
+
+    public void populateGrid(){
+        Random rnd = new Random();
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
-                Random rnd = new Random();
-                int num = rnd.nextInt(4);
-
-                Rectangle rectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
-                rectangle.setId(Integer.toString(i)+Integer.toString(j));
-
-                if(num == 1){
-                    rectangle.setStyle("-fx-fill: lightyellow; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
-                    getValues()[i][j] = 1;
-                } else{
-                    rectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
-                    getValues()[i][j] = 0;
+                if(rnd.nextDouble() < 0.05){
+                    generateIsland(i, j);
                 }
-                getAnchorPane().getChildren().add(rectangle);
+            }
+        }
+    }
+
+    public void displayCell(int i, int j){
+        Rectangle rectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
+        rectangle.setId(Integer.toString(i)+Integer.toString(j));
+
+        if(getValues()[i][j] == 1){
+            rectangle.setStyle("-fx-fill: lightyellow; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+        }
+        else{
+            rectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+        }
+        getAnchorPane().getChildren().add(rectangle);
+    }
+
+    public void initializeGrid(){
+        populateGrid();
+        for(int i = 0; i < getTilesDown(); i++){
+            for(int j = 0; j < getTilesAcross(); j++){
+                displayCell(i, j);
             }
         }
     }
@@ -82,7 +110,7 @@ public class GridHandler extends Grid {
                             int b = pos.getValue() + dir.getValue();
                             if(a >= 0 && a < getTilesDown() && b >= 0 && b < getTilesAcross() && getValues()[a][b] == 1){
                                 getValues()[a][b] = 0;
-                                stagger += 150;
+                                stagger += 100;
                                 keyFrame = new KeyFrame(Duration.millis(duration * ((i*getTilesAcross()) + j) + stagger), e -> {
                                     compute(a,b);
                                 });
