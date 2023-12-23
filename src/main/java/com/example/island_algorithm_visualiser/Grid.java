@@ -12,13 +12,15 @@ public class Grid {
     private int gridSize;
     private AnchorPane anchorPane;
     private int[][] values;
+    private boolean[][] visited;
 
-    public Grid(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values){
+    public Grid(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited){
         this.width = width;
         this.height = height;
         this.gridSize = gridSize;
         this.anchorPane = anchorPane;
         this.values = values;
+        this.visited = visited;
 
         tilesAcross = (int) (width / gridSize);
         tilesDown = (int) (height /gridSize);
@@ -34,4 +36,5 @@ public class Grid {
     public int getTilesDown() { return tilesDown; }
     public AnchorPane getAnchorPane() { return anchorPane; }
     public int[][] getValues() { return values; }
+    public boolean[][] getVisited() { return visited; }
 }

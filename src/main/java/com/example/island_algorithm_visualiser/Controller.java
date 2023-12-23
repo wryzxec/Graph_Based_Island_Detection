@@ -16,15 +16,18 @@ import java.util.ResourceBundle;
 
 public class Controller implements Initializable {
 
-    private int gridSize = 30;
-    private int[][] values = new int[gridSize][gridSize];
-    private GridHandler gridHandler;
-    private Grid grid;
-
     @FXML
     private AnchorPane pane;
     @FXML
     private Button start_button;
+
+    private Grid grid;
+    private int gridSize = 30;
+    private int[][] values;
+    private boolean[][] visited;
+    private GridHandler gridHandler;
+
+
 
     @FXML
     void visualize(MouseEvent event) {
@@ -33,16 +36,19 @@ public class Controller implements Initializable {
 
     @FXML
     void generate(MouseEvent event) {
-        values = new int[gridSize][gridSize];
-        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values);
-        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values);
+        values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
+        visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
+        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
+        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
         gridHandler.initializeGrid();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values);
-        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values);
+        values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
+        visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
+        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
+        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
         gridHandler.initializeGrid();
     }
 }

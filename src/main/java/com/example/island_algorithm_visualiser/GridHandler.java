@@ -15,8 +15,8 @@ public class GridHandler extends Grid {
     private Color bg1 = Color.WHITE;
     private Color bg2 = Color.color(0.82, 0.82, 0.82);
 
-    public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values){
-        super(width, height, gridSize, anchorPane, values);
+    public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited){
+        super(width, height, gridSize, anchorPane, values, visited);
     }
 
     public void generateIsland(int i, int j){
@@ -72,15 +72,52 @@ public class GridHandler extends Grid {
         Rectangle rectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
 
         Rectangle newRectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
-        newRectangle.setStyle("-fx-fill: red; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+        newRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
         getAnchorPane().getChildren().remove(rectangle);
         getAnchorPane().getChildren().add(newRectangle);
+    }
+
+    public void visualizeIteration(int i, int j){
+
+        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
+        Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+        newRectangle.setStyle("-fx-fill: red; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+        getAnchorPane().getChildren().remove(oldRectangle);
+        getAnchorPane().getChildren().add(newRectangle);
+
+        if(!(i == 0 && j == 0)){
+            if(j != 0){
+                Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j-1));
+                Rectangle newPrevRectangle = new Rectangle((j-1) * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+                if(getValues()[i][j-1] == 1){
+                    newPrevRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+                }
+                else{
+                    newPrevRectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+                }
+                getAnchorPane().getChildren().remove(oldPrevRectangle);
+                getAnchorPane().getChildren().add(newPrevRectangle);
+            }
+            else{
+                Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i-1)+Integer.toString(getTilesAcross()-1));
+                Rectangle newPrevRectangle = new Rectangle((getTilesAcross()-1) * getGridSize(), (i-1) * getGridSize(), getGridSize(), getGridSize());
+                if(getValues()[i-1][getTilesAcross()-1] == 1){
+                    newPrevRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+                }
+                else{
+                    newPrevRectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+                }
+                getAnchorPane().getChildren().remove(oldPrevRectangle);
+                getAnchorPane().getChildren().add(newPrevRectangle);
+            }
+        }
+
     }
 
     public void visualize(){
 
         Timeline timeline = new Timeline();
-        int duration = 100;
+        int duration = 50;
 
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
         dirs.add(new Pair<>(1,0));
@@ -89,28 +126,35 @@ public class GridHandler extends Grid {
         dirs.add(new Pair<>(0,-1));
 
         Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
-        int stagger = 100;
+        int stagger = duration;
 
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
                 int x = i;
                 int y = j;
 
-                if(getValues()[i][j] == 1){
-                    KeyFrame keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                getVisited()[i][j] = false;
+
+                KeyFrame keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                    visualizeIteration(x,y);
+                });
+                timeline.getKeyFrames().add(keyFrame);
+
+                if(getValues()[i][j] == 1 && !getVisited()[i][j]){
+                    keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
                         compute(x,y);
                     });
                     timeline.getKeyFrames().add(keyFrame);
                     toSearch.add(new Pair<>(i,j));
-                    getValues()[i][j] = 0;
+                    getVisited()[i][j] = true;
                     while(!toSearch.isEmpty()){
                         Pair<Integer, Integer> pos = toSearch.poll();
                         for(Pair<Integer, Integer> dir : dirs){
                             int a = pos.getKey() + dir.getKey();
                             int b = pos.getValue() + dir.getValue();
-                            if(a >= 0 && a < getTilesDown() && b >= 0 && b < getTilesAcross() && getValues()[a][b] == 1){
-                                getValues()[a][b] = 0;
-                                stagger += 100;
+                            if(a >= 0 && a < getTilesDown() && b >= 0 && b < getTilesAcross() && getValues()[a][b] == 1 && !getVisited()[a][b]){
+                                getVisited()[a][b] = true;
+                                stagger += duration;
                                 keyFrame = new KeyFrame(Duration.millis(duration * ((i*getTilesAcross()) + j) + stagger), e -> {
                                     compute(a,b);
                                 });
