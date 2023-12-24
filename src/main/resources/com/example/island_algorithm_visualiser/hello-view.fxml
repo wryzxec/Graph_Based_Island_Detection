@@ -24,8 +24,9 @@
               <items>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                      <children>
-                        <Button fx:id="generate_new" layoutX="75.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#generate" text="Generate New" textAlignment="CENTER" />
-                        <Button fx:id="start_button" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#visualize" text="Start" textAlignment="CENTER" />
+                        <Button fx:id="generate_new" layoutX="150.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#generateNewButtonClick" text="Generate New" textAlignment="CENTER" />
+                        <Button fx:id="start_button" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
+                        <Button fx:id="stop_button" layoutX="85.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#StopButtonClick" text="Stop" />
                      </children>
                   </AnchorPane>
                 <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="174.0">
