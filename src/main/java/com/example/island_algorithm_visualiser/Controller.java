@@ -22,6 +22,8 @@ public class Controller implements Initializable {
     @FXML
     private Button start_button;
     @FXML
+    private Button stop_button;
+    @FXML
     private Label island_counter;
 
     private Grid grid;
@@ -31,14 +33,27 @@ public class Controller implements Initializable {
     private GridHandler gridHandler;
 
     @FXML
-    void visualize(MouseEvent event) {
-        gridHandler.visualize();
-        island_counter.setText("Number of Islands: " + Integer.toString(gridHandler.getIslandCount()));
+    void startButtonPressed(MouseEvent event) {
+        if(!gridHandler.isVisualizationRunning()){
+            gridHandler.visualize();
+            island_counter.setText("Number of Islands: " + Integer.toString(gridHandler.getIslandCount()));
+        }
     }
 
     @FXML
-    void generate(MouseEvent event) {
+    void stopButtonPressed(MouseEvent event){
         gridHandler.stopVisualisation();
+        gridHandler.resetGrid();
+        gridHandler.resetVisited();
+        gridHandler.resetIslandCount();
+    }
+
+    @FXML
+    void generateButtonPressed(MouseEvent event) {
+
+        if(gridHandler.isVisualizationRunning()){
+            gridHandler.stopVisualisation();
+        }
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);

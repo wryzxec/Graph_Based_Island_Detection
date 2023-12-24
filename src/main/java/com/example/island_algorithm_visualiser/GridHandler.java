@@ -17,6 +17,7 @@ public class GridHandler extends Grid {
 
     private int islandCount = 0;
     private Timeline timeline;
+    private boolean visualizationRunning = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited){
         super(width, height, gridSize, anchorPane, values, visited);
@@ -121,6 +122,7 @@ public class GridHandler extends Grid {
 
         timeline = new Timeline();
         int duration = 25;
+        visualizationRunning = true;
 
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
         dirs.add(new Pair<>(1,0));
@@ -168,11 +170,31 @@ public class GridHandler extends Grid {
                 }
             }
         }
+        timeline.setOnFinished(event -> {
+            visualizationRunning = false;
+        });
         timeline.play();
+    }
+
+    public void resetGrid(){
+        for(int i = 0; i < getTilesDown(); i++){
+            for(int j = 0; j < getTilesAcross(); j++){
+                displayCell(i, j);
+            }
+        }
+    }
+    public void resetVisited(){
+        int m = getVisited().length;
+        int n = getVisited()[0].length;
+        setVisited(new boolean[m][n]);
     }
 
     public void stopVisualisation(){
         timeline.stop();
+        visualizationRunning = false;
     }
     public int getIslandCount(){ return islandCount; }
+    public void resetIslandCount() { islandCount = 0; }
+
+    public boolean isVisualizationRunning() { return visualizationRunning; }
 }

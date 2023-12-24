@@ -37,4 +37,5 @@ public class Grid {
     public AnchorPane getAnchorPane() { return anchorPane; }
     public int[][] getValues() { return values; }
     public boolean[][] getVisited() { return visited; }
+    public void setVisited(boolean[][] newVisited) {visited = newVisited; }
 }
