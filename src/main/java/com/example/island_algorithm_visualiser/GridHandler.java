@@ -16,7 +16,6 @@ public class GridHandler extends Grid {
     private Color bg2 = Color.color(0.82, 0.82, 0.82);
 
     private int islandCount = 0;
-    private Timeline timeline;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited){
         super(width, height, gridSize, anchorPane, values, visited);
@@ -119,7 +118,7 @@ public class GridHandler extends Grid {
 
     public void visualize(){
 
-        timeline = new Timeline();
+        Timeline timeline = new Timeline();
         int duration = 25;
 
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
@@ -169,10 +168,6 @@ public class GridHandler extends Grid {
             }
         }
         timeline.play();
-    }
-
-    public void stopVisualisation(){
-        timeline.stop();
     }
     public int getIslandCount(){ return islandCount; }
 }

@@ -38,7 +38,6 @@ public class Controller implements Initializable {
 
     @FXML
     void generate(MouseEvent event) {
-        gridHandler.stopVisualisation();
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
