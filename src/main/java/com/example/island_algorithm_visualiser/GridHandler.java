@@ -15,6 +15,9 @@ public class GridHandler extends Grid {
     private Color bg1 = Color.WHITE;
     private Color bg2 = Color.color(0.82, 0.82, 0.82);
 
+    private int islandCount = 0;
+    private Timeline timeline;
+
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited){
         super(width, height, gridSize, anchorPane, values, visited);
     }
@@ -39,7 +42,7 @@ public class GridHandler extends Grid {
         Random rnd = new Random();
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
-                if(rnd.nextDouble() < 0.05){
+                if(rnd.nextDouble() < 0.025){
                     generateIsland(i, j);
                 }
             }
@@ -116,8 +119,8 @@ public class GridHandler extends Grid {
 
     public void visualize(){
 
-        Timeline timeline = new Timeline();
-        int duration = 50;
+        timeline = new Timeline();
+        int duration = 25;
 
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
         dirs.add(new Pair<>(1,0));
@@ -133,14 +136,13 @@ public class GridHandler extends Grid {
                 int x = i;
                 int y = j;
 
-                getVisited()[i][j] = false;
-
                 KeyFrame keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
                     visualizeIteration(x,y);
                 });
                 timeline.getKeyFrames().add(keyFrame);
 
                 if(getValues()[i][j] == 1 && !getVisited()[i][j]){
+                    islandCount++;
                     keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
                         compute(x,y);
                     });
@@ -168,4 +170,9 @@ public class GridHandler extends Grid {
         }
         timeline.play();
     }
+
+    public void stopVisualisation(){
+        timeline.stop();
+    }
+    public int getIslandCount(){ return islandCount; }
 }

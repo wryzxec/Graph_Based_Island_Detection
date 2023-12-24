@@ -7,6 +7,7 @@ import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.util.Duration;
@@ -20,6 +21,8 @@ public class Controller implements Initializable {
     private AnchorPane pane;
     @FXML
     private Button start_button;
+    @FXML
+    private Label island_counter;
 
     private Grid grid;
     private int gridSize = 30;
@@ -27,15 +30,15 @@ public class Controller implements Initializable {
     private boolean[][] visited;
     private GridHandler gridHandler;
 
-
-
     @FXML
     void visualize(MouseEvent event) {
         gridHandler.visualize();
+        island_counter.setText("Number of Islands: " + Integer.toString(gridHandler.getIslandCount()));
     }
 
     @FXML
     void generate(MouseEvent event) {
+        gridHandler.stopVisualisation();
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
