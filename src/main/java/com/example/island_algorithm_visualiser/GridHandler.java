@@ -3,7 +3,6 @@ package com.example.island_algorithm_visualiser;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.util.Pair;
@@ -12,11 +11,11 @@ import java.util.*;
 
 public class GridHandler extends Grid {
 
-    private Color bg1 = Color.WHITE;
-    private Color bg2 = Color.color(0.82, 0.82, 0.82);
-
     private int islandCount = 0;
     private Timeline timeline;
+    private KeyFrame keyFrame;
+    private int duration = 25;
+    private int stagger = 0;
     private boolean visualizationRunning = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited){
@@ -118,56 +117,72 @@ public class GridHandler extends Grid {
 
     }
 
-    public void visualize(){
+    public void DFS(int i, int j, int startI, int startJ){
 
-        timeline = new Timeline();
-        int duration = 25;
+        if(i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross() || getVisited()[i][j] || getValues()[i][j] == 0){
+            return;
+        }
+        getVisited()[i][j] = true;
+        stagger += duration;
+        keyFrame = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
+            compute(i,j);
+        });
+        timeline.getKeyFrames().add(keyFrame);
 
+        DFS(i+1, j, startI, startJ);
+        DFS(i-1, j, startI, startJ);
+        DFS(i, j+1, startI, startJ);
+        DFS(i, j-1, startI, startJ);
+    }
+
+    public void BFS(int i, int j){
+
+        Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
         dirs.add(new Pair<>(1,0));
         dirs.add(new Pair<>(0,1));
         dirs.add(new Pair<>(-1,0));
         dirs.add(new Pair<>(0,-1));
 
-        Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
-        int stagger = duration;
-
-        for(int i = 0; i < getTilesDown(); i++){
-            for(int j = 0; j < getTilesAcross(); j++){
-                int x = i;
-                int y = j;
-
-                visualizationRunning = true;
-
-                KeyFrame keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
-                    visualizeIteration(x,y);
-                });
-                timeline.getKeyFrames().add(keyFrame);
-
-                if(getValues()[i][j] == 1 && !getVisited()[i][j]){
-                    islandCount++;
-                    keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
-                        compute(x,y);
+        keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+            compute(i,j);
+        });
+        timeline.getKeyFrames().add(keyFrame);
+        toSearch.add(new Pair<>(i,j));
+        getVisited()[i][j] = true;
+        while(!toSearch.isEmpty()){
+            Pair<Integer, Integer> pos = toSearch.poll();
+            for(Pair<Integer, Integer> dir : dirs){
+                int a = pos.getKey() + dir.getKey();
+                int b = pos.getValue() + dir.getValue();
+                if(a >= 0 && a < getTilesDown() && b >= 0 && b < getTilesAcross() && getValues()[a][b] == 1 && !getVisited()[a][b]){
+                    getVisited()[a][b] = true;
+                    stagger += duration;
+                    keyFrame = new KeyFrame(Duration.millis(duration * ((i*getTilesAcross()) + j) + stagger), e -> {
+                        compute(a,b);
                     });
                     timeline.getKeyFrames().add(keyFrame);
-                    toSearch.add(new Pair<>(i,j));
-                    getVisited()[i][j] = true;
-                    while(!toSearch.isEmpty()){
-                        Pair<Integer, Integer> pos = toSearch.poll();
-                        for(Pair<Integer, Integer> dir : dirs){
-                            int a = pos.getKey() + dir.getKey();
-                            int b = pos.getValue() + dir.getValue();
-                            if(a >= 0 && a < getTilesDown() && b >= 0 && b < getTilesAcross() && getValues()[a][b] == 1 && !getVisited()[a][b]){
-                                getVisited()[a][b] = true;
-                                stagger += duration;
-                                keyFrame = new KeyFrame(Duration.millis(duration * ((i*getTilesAcross()) + j) + stagger), e -> {
-                                    compute(a,b);
-                                });
-                                timeline.getKeyFrames().add(keyFrame);
-                                toSearch.add(new Pair<>(a, b));
-                            }
-                        }
-                    }
+                    toSearch.add(new Pair<>(a, b));
+                }
+            }
+        }
+    }
+
+    public void visualize(){
+        timeline = new Timeline();
+        stagger = duration;
+        for(int i = 0; i < getTilesDown(); i++){
+            for(int j = 0; j < getTilesAcross(); j++){
+                int startX = i;
+                int startY = j;
+                visualizationRunning = true;
+                KeyFrame keyFrame = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                    visualizeIteration(startX,startY);
+                });
+                timeline.getKeyFrames().add(keyFrame);
+                if(getValues()[i][j] == 1 && !getVisited()[i][j]){
+                    islandCount++;
+                    DFS(i,j,startX,startY);
                 }
             }
         }
