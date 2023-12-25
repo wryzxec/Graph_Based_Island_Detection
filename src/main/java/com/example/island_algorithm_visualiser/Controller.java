@@ -20,6 +20,10 @@ public class Controller implements Initializable {
     @FXML
     private AnchorPane pane;
     @FXML
+    private AnchorPane button_pane;
+    @FXML
+    private AnchorPane text_pane;
+    @FXML
     private Button start_button;
     @FXML
     private Button stop_button;
@@ -31,12 +35,12 @@ public class Controller implements Initializable {
     private int[][] values;
     private boolean[][] visited;
     private GridHandler gridHandler;
+    private Statistics statistics;
 
     @FXML
     void startButtonClick(MouseEvent event) {
         if(!gridHandler.isVisualizationRunning()){
             gridHandler.visualize();
-            island_counter.setText("Number of Islands: " + Integer.toString(gridHandler.getIslandCount()));
         }
     }
     @FXML
@@ -45,6 +49,7 @@ public class Controller implements Initializable {
         gridHandler.resetVisited();
         gridHandler.resetGrid();
         gridHandler.resetIslandCount();
+        statistics.resetStats();
     }
 
     @FXML
@@ -54,18 +59,20 @@ public class Controller implements Initializable {
         }
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
-        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
-        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
+        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
+        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
         gridHandler.initializeGrid();
         gridHandler.resetIslandCount();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        statistics = new Statistics(text_pane, island_counter);
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
-        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
-        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited);
+        grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
+        gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
+
         gridHandler.initializeGrid();
     }
 }
