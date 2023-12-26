@@ -31,7 +31,12 @@
                   </AnchorPane>
                 <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="174.0">
                      <children>
-                        <Label fx:id="island_counter" layoutX="13.0" layoutY="14.0" text="Island Count: 0">
+                        <Label fx:id="island_counter_label" layoutX="13.0" layoutY="14.0" text="Island Count: 0">
+                           <font>
+                              <Font size="24.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="80.0" text="Cells Visited: 0">
                            <font>
                               <Font size="24.0" />
                            </font>

@@ -7,29 +7,32 @@ import javafx.scene.layout.AnchorPane;
 
 public class Statistics {
 
-    private int islandCount;
-    private int BFS_cellsVisited;
-    private int DFS_cellsVisited;
-    private int duration;
     private AnchorPane anchorPane;
-    private Timeline timeline;
     private Label islandCountLabel;
+    private Label visitedCountLabel;
+    private int islandCount;
+    private int visitedCount;
 
-
-    public Statistics(AnchorPane anchorPane, Label islandCountLabel){
+    public Statistics(AnchorPane anchorPane, Label islandCountLabel, Label cellsVisitedLabel){
         this.anchorPane = anchorPane;
         this.islandCountLabel = islandCountLabel;
+        this.visitedCountLabel = cellsVisitedLabel;
     }
-    public void updateIslandCount(int count){
+    public void updateIslandCountLabel(int count){
         islandCountLabel.setText("Island Count: "+Integer.toString(count));
     }
-    public void resetStats(){
-        updateIslandCount(0);
+
+    public void updateVisitedCountLabel(int count){
+        visitedCountLabel.setText("Cells Visited: "+Integer.toString(count));
     }
-
+    public void resetStats(){
+        islandCount = 0;
+        visitedCount = 0;
+        updateIslandCountLabel(islandCount);
+        updateVisitedCountLabel(visitedCount);
+    }
     public int getIslandCount() { return islandCount; }
-    public AnchorPane getAnchorPane() { return anchorPane; }
-    public void setIslandCount(int newIslandCount) { islandCount = newIslandCount; }
-    public Label getIslandCountLabel() { return islandCountLabel; }
-
+    public int getVisitedCount() { return visitedCount; }
+    public void incrementIslandCount() { islandCount++; }
+    public void incrementVisitedCount() { visitedCount++; }
 }

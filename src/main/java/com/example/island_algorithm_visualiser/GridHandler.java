@@ -16,7 +16,6 @@ public class GridHandler extends Grid {
     private KeyFrame keyframe;
     private int duration = 25;
     private int stagger = 0;
-    private int islandCount = 0;
     private boolean visualizationRunning = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited, Statistics statistics){
@@ -126,6 +125,8 @@ public class GridHandler extends Grid {
         getVisited()[i][j] = true;
         stagger += duration;
         keyframe = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
+            getStatistics().incrementVisitedCount();
+            getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
             compute(i,j);
         });
         timeline.getKeyFrames().add(keyframe);
@@ -171,26 +172,28 @@ public class GridHandler extends Grid {
 
     public void visualize(){
         timeline = new Timeline();
-
+        visualizationRunning = true;
         stagger = duration;
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
                 int startX = i;
                 int startY = j;
-                visualizationRunning = true;
                 keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                    if(!getVisited()[startX][startY]){
+                        getStatistics().incrementVisitedCount();
+                        getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
+                    }
                     visualizeIteration(startX,startY);
                 });
                 timeline.getKeyFrames().add(keyframe);
                 if(getValues()[i][j] == 1 && !getVisited()[i][j]){
                     keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
-                        islandCount++;
-                        getStatistics().updateIslandCount(islandCount);
+                        getStatistics().incrementIslandCount();
+                        getStatistics().updateIslandCountLabel(getStatistics().getIslandCount());
                     });
                     timeline.getKeyFrames().add(keyframe);
                     DFS(i,j,startX,startY);
                 }
-                timeline.getKeyFrames().add(keyframe);
             }
         }
         timeline.play();
@@ -219,8 +222,5 @@ public class GridHandler extends Grid {
     public void stopVisualisation(){
         timeline.stop();
         visualizationRunning = false;
-    }
-    public void resetIslandCount(){
-        islandCount = 0;
     }
 }

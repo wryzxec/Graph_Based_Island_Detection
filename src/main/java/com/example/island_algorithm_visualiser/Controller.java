@@ -28,7 +28,9 @@ public class Controller implements Initializable {
     @FXML
     private Button stop_button;
     @FXML
-    private Label island_counter;
+    private Label island_counter_label;
+    @FXML
+    private Label cells_visited_label;
 
     private Grid grid;
     private int gridSize = 30;
@@ -48,7 +50,6 @@ public class Controller implements Initializable {
         gridHandler.stopVisualisation();
         gridHandler.resetVisited();
         gridHandler.resetGrid();
-        gridHandler.resetIslandCount();
         statistics.resetStats();
     }
 
@@ -57,17 +58,18 @@ public class Controller implements Initializable {
         if(gridHandler.isVisualizationRunning()){
             gridHandler.stopVisualisation();
         }
+        statistics = new Statistics(pane, island_counter_label, cells_visited_label);
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
         gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
         gridHandler.initializeGrid();
-        gridHandler.resetIslandCount();
+        statistics.resetStats();
     }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        statistics = new Statistics(text_pane, island_counter);
+        statistics = new Statistics(text_pane, island_counter_label, cells_visited_label);
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
