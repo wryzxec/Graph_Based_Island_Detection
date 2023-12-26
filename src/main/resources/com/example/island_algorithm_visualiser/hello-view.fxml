@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
@@ -20,25 +21,27 @@
    <right>
       <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <SplitPane dividerPositions="0.2687667560321716" orientation="VERTICAL" prefHeight="300.0" prefWidth="266.0" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.33333333333333337" orientation="VERTICAL" prefHeight="300.0" prefWidth="266.0" BorderPane.alignment="CENTER">
               <items>
-                <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+                <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
                         <Button fx:id="generate_new" layoutX="150.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#generateNewButtonClick" text="Generate New" textAlignment="CENTER" />
                         <Button fx:id="start_button" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
-                        <Button fx:id="stop_button" layoutX="85.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#StopButtonClick" text="Stop" />
+                        <Button fx:id="stop_button" layoutX="85.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#stopButtonClick" text="Stop" />
+                        <CheckBox fx:id="DFS_CheckBox" layoutX="14.0" layoutY="65.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="DFS" />
+                        <CheckBox fx:id="BFS_CheckBox" layoutX="72.0" layoutY="65.0" mnemonicParsing="false" onMouseClicked="#BFS_CheckBoxSelected" text="BFS" />
                      </children>
                   </AnchorPane>
                 <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="174.0">
                      <children>
                         <Label fx:id="island_counter_label" layoutX="13.0" layoutY="14.0" text="Island Count: 0">
                            <font>
-                              <Font size="24.0" />
+                              <Font name="Consolas" size="24.0" />
                            </font>
                         </Label>
-                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="80.0" text="Cells Visited: 0">
+                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="62.0" text="Cells Visited: 0">
                            <font>
-                              <Font size="24.0" />
+                              <Font name="Consolas" size="24.0" />
                            </font>
                         </Label>
                      </children></AnchorPane>

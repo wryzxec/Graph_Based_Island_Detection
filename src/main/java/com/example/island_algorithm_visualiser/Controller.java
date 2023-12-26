@@ -1,16 +1,12 @@
 package com.example.island_algorithm_visualiser;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.util.Duration;
 
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -31,6 +27,10 @@ public class Controller implements Initializable {
     private Label island_counter_label;
     @FXML
     private Label cells_visited_label;
+    @FXML
+    private CheckBox DFS_CheckBox;
+    @FXML
+    private CheckBox BFS_CheckBox;
 
     private Grid grid;
     private int gridSize = 30;
@@ -41,12 +41,12 @@ public class Controller implements Initializable {
 
     @FXML
     void startButtonClick(MouseEvent event) {
-        if(!gridHandler.isVisualizationRunning()){
+        if(!gridHandler.isVisualizationRunning() && (DFS_CheckBox.isSelected() || BFS_CheckBox.isSelected())){
             gridHandler.visualize();
         }
     }
     @FXML
-    void StopButtonClick(MouseEvent event){
+    void stopButtonClick(MouseEvent event){
         gridHandler.stopVisualisation();
         gridHandler.resetVisited();
         gridHandler.resetGrid();
@@ -65,6 +65,19 @@ public class Controller implements Initializable {
         gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
         gridHandler.initializeGrid();
         statistics.resetStats();
+    }
+
+    @FXML
+    public void DFS_CheckBoxSelected(MouseEvent event){
+        gridHandler.setDFS_Selected(true);
+        gridHandler.setBFS_Selected(false);
+        BFS_CheckBox.setSelected(false);
+    }
+    @FXML
+    public void BFS_CheckBoxSelected(MouseEvent event){
+        gridHandler.setBFS_Selected(true);
+        gridHandler.setDFS_Selected(false);
+        DFS_CheckBox.setSelected(false);
     }
 
     @Override

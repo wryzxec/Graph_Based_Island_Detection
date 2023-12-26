@@ -17,6 +17,8 @@ public class GridHandler extends Grid {
     private int duration = 25;
     private int stagger = 0;
     private boolean visualizationRunning = false;
+    private boolean DFS_Selected = false;
+    private boolean BFS_Selected = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited, Statistics statistics){
         super(width, height, gridSize, anchorPane, values, visited, statistics);
@@ -147,6 +149,8 @@ public class GridHandler extends Grid {
         dirs.add(new Pair<>(0,-1));
 
         keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+            getStatistics().incrementVisitedCount();
+            getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
             compute(i,j);
         });
         timeline.getKeyFrames().add(keyframe);
@@ -162,6 +166,8 @@ public class GridHandler extends Grid {
                     stagger += duration;
                     keyframe = new KeyFrame(Duration.millis(duration * ((i*getTilesAcross()) + j) + stagger), e -> {
                         compute(a,b);
+                        getStatistics().incrementVisitedCount();
+                        getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
                     });
                     timeline.getKeyFrames().add(keyframe);
                     toSearch.add(new Pair<>(a, b));
@@ -192,7 +198,12 @@ public class GridHandler extends Grid {
                         getStatistics().updateIslandCountLabel(getStatistics().getIslandCount());
                     });
                     timeline.getKeyFrames().add(keyframe);
-                    DFS(i,j,startX,startY);
+                    if(DFS_Selected && !BFS_Selected){
+                        DFS(i,j,startX,startY);
+                    }
+                    else if(BFS_Selected && !DFS_Selected){
+                        BFS(i, j);
+                    }
                 }
             }
         }
@@ -222,5 +233,11 @@ public class GridHandler extends Grid {
     public void stopVisualisation(){
         timeline.stop();
         visualizationRunning = false;
+    }
+    public void setBFS_Selected(boolean isSelected){
+        BFS_Selected = isSelected;
+    }
+    public void setDFS_Selected(boolean isSelected){
+        DFS_Selected = isSelected;
     }
 }
