@@ -28,6 +28,12 @@ public class Controller implements Initializable {
     @FXML
     private Label cells_visited_label;
     @FXML
+    private Label island_area_Label;
+    @FXML
+    private Label water_area_label;
+    @FXML
+    private Label max_island_perimeter_label;
+    @FXML
     private CheckBox DFS_CheckBox;
     @FXML
     private CheckBox BFS_CheckBox;
@@ -58,7 +64,7 @@ public class Controller implements Initializable {
         if(gridHandler.isVisualizationRunning()){
             gridHandler.stopVisualisation();
         }
-        statistics = new Statistics(pane, island_counter_label, cells_visited_label);
+        statistics = new Statistics(pane, island_counter_label, cells_visited_label, island_area_Label, water_area_label, max_island_perimeter_label);
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
@@ -82,7 +88,7 @@ public class Controller implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
-        statistics = new Statistics(text_pane, island_counter_label, cells_visited_label);
+        statistics = new Statistics(text_pane, island_counter_label, cells_visited_label, island_area_Label, water_area_label, max_island_perimeter_label);
         values = new int[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);

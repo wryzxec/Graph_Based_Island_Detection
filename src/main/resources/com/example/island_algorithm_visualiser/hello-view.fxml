@@ -10,7 +10,7 @@
 
 <BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.example.island_algorithm_visualiser.Controller">
    <center>
-      <AnchorPane fx:id="pane" prefHeight="870.0" prefWidth="1100" BorderPane.alignment="CENTER" />
+      <AnchorPane fx:id="pane" prefHeight="840.0" prefWidth="1100.0" BorderPane.alignment="CENTER" />
    </center>
    <left>
       <AnchorPane prefHeight="325.0" prefWidth="50.0" BorderPane.alignment="CENTER" />
@@ -19,9 +19,9 @@
       <AnchorPane prefHeight="50.0" prefWidth="600.0" BorderPane.alignment="CENTER" />
    </top>
    <right>
-      <BorderPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+      <BorderPane prefHeight="299.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <SplitPane dividerPositions="0.33333333333333337" orientation="VERTICAL" prefHeight="300.0" prefWidth="266.0" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.33333333333333337" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
               <items>
                 <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
@@ -32,16 +32,31 @@
                         <CheckBox fx:id="BFS_CheckBox" layoutX="72.0" layoutY="65.0" mnemonicParsing="false" onMouseClicked="#BFS_CheckBoxSelected" text="BFS" />
                      </children>
                   </AnchorPane>
-                <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="174.0">
+                <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="290.0">
                      <children>
-                        <Label fx:id="island_counter_label" layoutX="13.0" layoutY="14.0" text="Island Count: 0">
+                        <Label fx:id="island_counter_label" layoutX="13.0" layoutY="10.0" text="Island Count: 0">
                            <font>
-                              <Font name="Consolas" size="24.0" />
+                              <Font name="Consolas" size="20.0" />
                            </font>
                         </Label>
-                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="62.0" text="Cells Visited: 0">
+                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="60.0" text="Cells Visited: 0">
                            <font>
-                              <Font name="Consolas" size="24.0" />
+                              <Font name="Consolas" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="island_area_Label" layoutX="13.0" layoutY="110.0" text="Total Island Area: 0">
+                           <font>
+                              <Font name="Consolas" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="water_area_label" layoutX="13.0" layoutY="160.0" text="Total Water Area: 0">
+                           <font>
+                              <Font name="Consolas" size="20.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="max_island_perimeter_label" layoutX="13.0" layoutY="210.0" text="Max Island Perimeter: 0">
+                           <font>
+                              <Font name="Consolas" size="20.0" />
                            </font>
                         </Label>
                      </children></AnchorPane>
@@ -49,7 +64,7 @@
             </SplitPane>
          </left>
          <right>
-            <AnchorPane prefHeight="350.0" prefWidth="54.0" BorderPane.alignment="CENTER" />
+            <AnchorPane prefHeight="299.0" prefWidth="30.0" BorderPane.alignment="CENTER" />
          </right>
       </BorderPane>
    </right>

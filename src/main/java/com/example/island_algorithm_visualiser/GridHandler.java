@@ -119,16 +119,66 @@ public class GridHandler extends Grid {
 
     }
 
-    public void DFS(int i, int j, int startI, int startJ){
+    public void visualizeMaxPerimeter(){
+        List<Pair<Integer, Integer>> maxIslandPerimeterPoints = getStatistics().getMaxPerimeterPoints();
+        int n = maxIslandPerimeterPoints.size();
 
-        if(i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross() || getVisited()[i][j] || getValues()[i][j] == 0){
+        for(int a = 0; a < n; a++){
+            Pair<Integer, Integer> pos = maxIslandPerimeterPoints.get(a);
+            int i = pos.getKey();
+            int j = pos.getValue();
+            Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
+            Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+            newRectangle.setStyle("-fx-fill: rgba(255,0,0,0.25); -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+            getAnchorPane().getChildren().remove(oldRectangle);
+            getAnchorPane().getChildren().add(newRectangle);
+        }
+    }
+
+    public boolean isOutOfBounds(int i, int j){
+        return i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross();
+    }
+
+    public void DFS(int i, int j, int startI, int startJ){
+        if(isOutOfBounds(i, j)){
+            stagger += duration;
+            keyframe = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
+                getStatistics().incrementIslandPerimeter();
+                getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
+                getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
+            });
+            timeline.getKeyFrames().add(keyframe);
             return;
         }
+        if(getVisited()[i][j]){
+            return;
+        }
+        if(getValues()[i][j] == 0){
+            stagger += duration;
+            keyframe = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
+                if(!getStatistics().getPerimeterPoints().contains(new Pair<>(i, j))){
+                    getStatistics().incrementIslandPerimeter();
+                    getStatistics().addPerimeterPoint(new Pair<>(i, j));
+                    if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
+                        getStatistics().setMaxIslandPerimeter(getStatistics().getIslandPerimeter());
+                        getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
+                    }
+                    getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
+                    getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
+                }
+            });
+            timeline.getKeyFrames().add(keyframe);
+            return;
+        }
+
+
         getVisited()[i][j] = true;
         stagger += duration;
         keyframe = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
             getStatistics().incrementVisitedCount();
+            getStatistics().incrementIslandArea();
             getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
+            getStatistics().updateIslandAreaLabel(getStatistics().getIslandArea());
             compute(i,j);
         });
         timeline.getKeyFrames().add(keyframe);
@@ -150,7 +200,9 @@ public class GridHandler extends Grid {
 
         keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
             getStatistics().incrementVisitedCount();
+            getStatistics().incrementIslandArea();
             getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
+            getStatistics().updateIslandAreaLabel(getStatistics().getIslandArea());
             compute(i,j);
         });
         timeline.getKeyFrames().add(keyframe);
@@ -161,16 +213,43 @@ public class GridHandler extends Grid {
             for(Pair<Integer, Integer> dir : dirs){
                 int a = pos.getKey() + dir.getKey();
                 int b = pos.getValue() + dir.getValue();
-                if(a >= 0 && a < getTilesDown() && b >= 0 && b < getTilesAcross() && getValues()[a][b] == 1 && !getVisited()[a][b]){
+                if(isOutOfBounds(a, b)){
+                    stagger += duration;
+                    keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                        getStatistics().incrementIslandPerimeter();
+                        getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
+                        getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
+                    });
+                    timeline.getKeyFrames().add(keyframe);
+                }
+                if(!isOutOfBounds(a, b) && getValues()[a][b] == 1 && !getVisited()[a][b]){
                     getVisited()[a][b] = true;
                     stagger += duration;
                     keyframe = new KeyFrame(Duration.millis(duration * ((i*getTilesAcross()) + j) + stagger), e -> {
-                        compute(a,b);
                         getStatistics().incrementVisitedCount();
+                        getStatistics().incrementIslandArea();
                         getStatistics().updateVisitedCountLabel(getStatistics().getVisitedCount());
+                        getStatistics().updateIslandAreaLabel(getStatistics().getIslandArea());
+                        compute(a,b);
                     });
                     timeline.getKeyFrames().add(keyframe);
                     toSearch.add(new Pair<>(a, b));
+                }
+                else if(!isOutOfBounds(a, b) && getValues()[a][b] == 0 && !getVisited()[a][b]){
+                    stagger += duration;
+                    keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                        if(!getStatistics().getPerimeterPoints().contains(new Pair<>(a, b))){
+                            getStatistics().incrementIslandPerimeter();
+                            getStatistics().addPerimeterPoint(new Pair<>(a, b));
+                            if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
+                                getStatistics().setMaxIslandPerimeter(getStatistics().getIslandPerimeter());
+                                getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
+                            }
+                            getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
+                            getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
+                        }
+                    });
+                    timeline.getKeyFrames().add(keyframe);
                 }
             }
         }
@@ -194,10 +273,13 @@ public class GridHandler extends Grid {
                 timeline.getKeyFrames().add(keyframe);
                 if(getValues()[i][j] == 1 && !getVisited()[i][j]){
                     keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                        getStatistics().setIslandPerimeter(0);
+                        getStatistics().setPerimeterPoints(new ArrayList<>());
                         getStatistics().incrementIslandCount();
                         getStatistics().updateIslandCountLabel(getStatistics().getIslandCount());
                     });
                     timeline.getKeyFrames().add(keyframe);
+
                     if(DFS_Selected && !BFS_Selected){
                         DFS(i,j,startX,startY);
                     }
@@ -205,11 +287,19 @@ public class GridHandler extends Grid {
                         BFS(i, j);
                     }
                 }
+                if(getValues()[i][j] == 0 && !getVisited()[i][j]){
+                    keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                        getStatistics().incrementWaterArea();
+                        getStatistics().updateWaterAreaLabel(getStatistics().getWaterArea());
+                    });
+                    timeline.getKeyFrames().add(keyframe);
+                }
             }
         }
         timeline.play();
         timeline.setOnFinished(event -> {
-           visualizationRunning = false;
+            visualizeMaxPerimeter();
+            visualizationRunning = false;
         });
     }
 
