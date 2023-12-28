@@ -24,6 +24,8 @@ public class Controller implements Initializable {
     @FXML
     private Button stop_button;
     @FXML
+    private Button generate_new_button;
+    @FXML
     private Label island_counter_label;
     @FXML
     private Label cells_visited_label;
@@ -34,9 +36,13 @@ public class Controller implements Initializable {
     @FXML
     private Label max_island_perimeter_label;
     @FXML
+    private Label invalid_selection_message;
+    @FXML
     private CheckBox DFS_CheckBox;
     @FXML
     private CheckBox BFS_CheckBox;
+    @FXML
+    private CheckBox show_perimeter_checkbox;
 
     private Grid grid;
     private int gridSize = 30;
@@ -47,6 +53,10 @@ public class Controller implements Initializable {
 
     @FXML
     void startButtonClick(MouseEvent event) {
+        gridHandler.setShowPerimeterSelected(show_perimeter_checkbox.isSelected());
+        gridHandler.setBFS_Selected(BFS_CheckBox.isSelected());
+        gridHandler.setDFS_Selected(DFS_CheckBox.isSelected());
+        invalid_selection_message.setVisible(!BFS_CheckBox.isSelected() && !DFS_CheckBox.isSelected());
         if(!gridHandler.isVisualizationRunning() && (DFS_CheckBox.isSelected() || BFS_CheckBox.isSelected())){
             gridHandler.visualize();
         }
@@ -75,14 +85,10 @@ public class Controller implements Initializable {
 
     @FXML
     public void DFS_CheckBoxSelected(MouseEvent event){
-        gridHandler.setDFS_Selected(true);
-        gridHandler.setBFS_Selected(false);
         BFS_CheckBox.setSelected(false);
     }
     @FXML
     public void BFS_CheckBoxSelected(MouseEvent event){
-        gridHandler.setBFS_Selected(true);
-        gridHandler.setDFS_Selected(false);
         DFS_CheckBox.setSelected(false);
     }
 

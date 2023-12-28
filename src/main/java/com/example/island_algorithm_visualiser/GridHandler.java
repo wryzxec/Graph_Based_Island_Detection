@@ -19,6 +19,7 @@ public class GridHandler extends Grid {
     private boolean visualizationRunning = false;
     private boolean DFS_Selected = false;
     private boolean BFS_Selected = false;
+    private boolean showPerimeterSelected = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited, Statistics statistics){
         super(width, height, gridSize, anchorPane, values, visited, statistics);
@@ -298,7 +299,9 @@ public class GridHandler extends Grid {
         }
         timeline.play();
         timeline.setOnFinished(event -> {
-            visualizeMaxPerimeter();
+            if(showPerimeterSelected) {
+                visualizeMaxPerimeter();
+            }
             visualizationRunning = false;
         });
     }
@@ -330,4 +333,9 @@ public class GridHandler extends Grid {
     public void setDFS_Selected(boolean isSelected){
         DFS_Selected = isSelected;
     }
+
+    public void setDuration(int newDuration){
+        duration = newDuration;
+    }
+    public void setShowPerimeterSelected(boolean isSelected) { showPerimeterSelected = isSelected; }
 }

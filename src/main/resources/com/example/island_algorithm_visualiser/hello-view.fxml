@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
 <?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -25,11 +26,33 @@
               <items>
                 <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
-                        <Button fx:id="generate_new" layoutX="150.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#generateNewButtonClick" text="Generate New" textAlignment="CENTER" />
-                        <Button fx:id="start_button" layoutX="14.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
-                        <Button fx:id="stop_button" layoutX="85.0" layoutY="26.0" mnemonicParsing="false" onMouseClicked="#stopButtonClick" text="Stop" />
-                        <CheckBox fx:id="DFS_CheckBox" layoutX="14.0" layoutY="65.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="DFS" />
-                        <CheckBox fx:id="BFS_CheckBox" layoutX="72.0" layoutY="65.0" mnemonicParsing="false" onMouseClicked="#BFS_CheckBoxSelected" text="BFS" />
+                        <Label fx:id="visualization_title" layoutX="13.0" layoutY="10.0" text="Visualisation Controls">
+                           <font>
+                              <Font name="Consolas" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="algorithm_title" layoutX="13.0" layoutY="80.0" text="Algorithm">
+                           <font>
+                              <Font name="Consolas" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="perimeter_outline_title" layoutX="13.0" layoutY="150.0" text="Visualisation Settings">
+                           <font>
+                              <Font name="Consolas" size="15.0" />
+                           </font>
+                        </Label>
+                        <Button fx:id="generate_new_button" layoutX="150.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#generateNewButtonClick" text="Generate New Map" textAlignment="CENTER" />
+                        <Button fx:id="start_button" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
+                        <Button fx:id="stop_button" layoutX="85.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#stopButtonClick" text="Stop" />
+                        <CheckBox fx:id="DFS_CheckBox" layoutX="14.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="DFS" />
+                        <CheckBox fx:id="BFS_CheckBox" layoutX="72.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#BFS_CheckBoxSelected" text="BFS" />
+                        <Label fx:id="invalid_selection_message" layoutX="150.0" layoutY="110.0" text="Please select an option" textFill="RED" visible="false">
+                           <font>
+                              <Font name="System Bold" size="12.0" />
+                           </font>
+                        </Label>
+                        <CheckBox fx:id="show_perimeter_checkbox" layoutX="14.0" layoutY="210.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="Show Largest Perimeter" />
+                        <Slider fx:id="speed_slider" layoutX="125.0" layoutY="82.0" />
                      </children>
                   </AnchorPane>
                 <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="290.0">
