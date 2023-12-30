@@ -22,11 +22,11 @@
    <right>
       <BorderPane prefHeight="299.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <SplitPane dividerPositions="0.33333333333333337" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+            <SplitPane dividerPositions="0.1" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
               <items>
                 <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
-                        <Label fx:id="visualization_title" layoutX="13.0" layoutY="10.0" text="Visualisation Controls">
+                        <Label fx:id="visualization_controls_title" layoutX="13.0" layoutY="10.0" text="Visualisation Controls">
                            <font>
                               <Font name="Consolas" size="15.0" />
                            </font>
@@ -36,52 +36,40 @@
                               <Font name="Consolas" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="perimeter_outline_title" layoutX="13.0" layoutY="150.0" text="Visualisation Settings">
+                        <Label fx:id="visualisation_settings_title" layoutX="13.0" layoutY="150.0" text="Visualisation Settings">
                            <font>
                               <Font name="Consolas" size="15.0" />
                            </font>
                         </Label>
                         <Button fx:id="generate_new_button" layoutX="150.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#generateNewButtonClick" text="Generate New Map" textAlignment="CENTER" />
-                        <Button fx:id="start_button" layoutX="14.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
+                        <Button fx:id="start_button" layoutX="13.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
                         <Button fx:id="stop_button" layoutX="85.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#stopButtonClick" text="Stop" />
-                        <CheckBox fx:id="DFS_CheckBox" layoutX="14.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="DFS" />
+                        <CheckBox fx:id="DFS_CheckBox" layoutX="13.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="DFS" />
                         <CheckBox fx:id="BFS_CheckBox" layoutX="72.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#BFS_CheckBoxSelected" text="BFS" />
                         <Label fx:id="invalid_selection_message" layoutX="150.0" layoutY="110.0" text="Please select an option" textFill="RED" visible="false">
                            <font>
                               <Font name="System Bold" size="12.0" />
                            </font>
                         </Label>
-                        <CheckBox fx:id="show_perimeter_checkbox" layoutX="14.0" layoutY="210.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="Show Largest Perimeter" />
-                        <Slider fx:id="speed_slider" layoutX="125.0" layoutY="82.0" />
+                        <Label fx:id="speed_title" layoutX="13.0" layoutY="180.0" text="Speed"/>
+                        <CheckBox fx:id="speed_checkbox_1x" layoutX="13.0" layoutY="200.0" onMouseClicked="#speed1xSelected" text="1x" />
+                        <CheckBox fx:id = "speed_checkbox_2x" layoutX="72.0" layoutY="200" onMouseClicked="#speed2xSelected" text="2x" />
+                        <Label fx:id="perimeter_title" layoutX="13.0" layoutY="230" text="Perimeter"/>
+                        <CheckBox fx:id="show_perimeter_checkbox" layoutX="13.0" layoutY="250.0" mnemonicParsing="false" text="Show Largest Perimeter" />
                      </children>
                   </AnchorPane>
                 <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="290.0">
                      <children>
-                        <Label fx:id="island_counter_label" layoutX="13.0" layoutY="10.0" text="Island Count: 0">
+                        <Label fx:id="statistics_title" layoutX="13.0" layoutY="10" text="Statistics">
                            <font>
-                              <Font name="Consolas" size="20.0" />
+                              <Font name="Consolas" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="60.0" text="Cells Visited: 0">
-                           <font>
-                              <Font name="Consolas" size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="island_area_Label" layoutX="13.0" layoutY="110.0" text="Total Island Area: 0">
-                           <font>
-                              <Font name="Consolas" size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="water_area_label" layoutX="13.0" layoutY="160.0" text="Total Water Area: 0">
-                           <font>
-                              <Font name="Consolas" size="20.0" />
-                           </font>
-                        </Label>
-                        <Label fx:id="max_island_perimeter_label" layoutX="13.0" layoutY="210.0" text="Max Island Perimeter: 0">
-                           <font>
-                              <Font name="Consolas" size="20.0" />
-                           </font>
-                        </Label>
+                        <Label fx:id="island_counter_label" layoutX="13.0" layoutY="40" text="Island Count: 0"/>
+                        <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="70.0" text="Cells Visited: 0"/>
+                        <Label fx:id="island_area_Label" layoutX="13.0" layoutY="100.0" text="Total Island Area: 0"/>
+                        <Label fx:id="water_area_label" layoutX="13.0" layoutY="130.0" text="Total Water Area: 0"/>
+                        <Label fx:id="max_island_perimeter_label" layoutX="13.0" layoutY="160.0" text="Max Island Perimeter: 0"/>
                      </children></AnchorPane>
               </items>
             </SplitPane>

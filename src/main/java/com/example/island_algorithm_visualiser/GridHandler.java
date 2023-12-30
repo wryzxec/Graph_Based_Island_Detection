@@ -14,11 +14,13 @@ public class GridHandler extends Grid {
 
     private Timeline timeline;
     private KeyFrame keyframe;
-    private int duration = 25;
-    private int stagger = 0;
+    private int duration;
+    private int stagger;
     private boolean visualizationRunning = false;
     private boolean DFS_Selected = false;
     private boolean BFS_Selected = false;
+    private boolean duration1xSelected = false;
+    private boolean duration2xSelected = false;
     private boolean showPerimeterSelected = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited, Statistics statistics){
@@ -259,6 +261,8 @@ public class GridHandler extends Grid {
     public void visualize(){
         timeline = new Timeline();
         visualizationRunning = true;
+        if(duration1xSelected) duration = 30;
+        else if(duration2xSelected) duration = 15;
         stagger = duration;
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
@@ -333,9 +337,12 @@ public class GridHandler extends Grid {
     public void setDFS_Selected(boolean isSelected){
         DFS_Selected = isSelected;
     }
-
-    public void setDuration(int newDuration){
-        duration = newDuration;
+    public void setDuration1xSelected(boolean isSelected){
+        duration1xSelected = isSelected;
     }
+    public void setDuration2xSelected(boolean isSelected){
+        duration2xSelected = isSelected;
+    }
+
     public void setShowPerimeterSelected(boolean isSelected) { showPerimeterSelected = isSelected; }
 }

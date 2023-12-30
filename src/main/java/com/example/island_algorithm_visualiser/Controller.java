@@ -42,6 +42,10 @@ public class Controller implements Initializable {
     @FXML
     private CheckBox BFS_CheckBox;
     @FXML
+    private CheckBox speed_checkbox_1x;
+    @FXML
+    private CheckBox speed_checkbox_2x;
+    @FXML
     private CheckBox show_perimeter_checkbox;
 
     private Grid grid;
@@ -56,6 +60,8 @@ public class Controller implements Initializable {
         gridHandler.setShowPerimeterSelected(show_perimeter_checkbox.isSelected());
         gridHandler.setBFS_Selected(BFS_CheckBox.isSelected());
         gridHandler.setDFS_Selected(DFS_CheckBox.isSelected());
+        gridHandler.setDuration1xSelected(speed_checkbox_1x.isSelected());
+        gridHandler.setDuration2xSelected(speed_checkbox_2x.isSelected());
         invalid_selection_message.setVisible(!BFS_CheckBox.isSelected() && !DFS_CheckBox.isSelected());
         if(!gridHandler.isVisualizationRunning() && (DFS_CheckBox.isSelected() || BFS_CheckBox.isSelected())){
             gridHandler.visualize();
@@ -91,6 +97,14 @@ public class Controller implements Initializable {
     public void BFS_CheckBoxSelected(MouseEvent event){
         DFS_CheckBox.setSelected(false);
     }
+    @FXML
+    public void speed1xSelected(MouseEvent event){
+        speed_checkbox_2x.setSelected(false);
+    }
+    @FXML
+    public void speed2xSelected(MouseEvent event){
+        speed_checkbox_1x.setSelected(false);
+    }
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
@@ -99,7 +113,9 @@ public class Controller implements Initializable {
         visited = new boolean[(int) pane.getPrefHeight() / gridSize][(int) pane.getPrefWidth() / gridSize];
         grid = new Grid(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
         gridHandler = new GridHandler(pane.getPrefWidth(), pane.getPrefHeight(), gridSize, pane, values, visited, statistics);
-
+        gridHandler.setDuration1xSelected(true);
+        speed_checkbox_1x.setSelected(true);
+        DFS_CheckBox.setSelected(true);
         gridHandler.initializeGrid();
     }
 }
