@@ -54,7 +54,7 @@ public class GridHandler extends Grid {
         }
     }
 
-    public void displayCell(int i, int j){
+    public void createCell(int i, int j){
         Rectangle rectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
         rectangle.setId(Integer.toString(i)+Integer.toString(j));
 
@@ -67,14 +67,29 @@ public class GridHandler extends Grid {
         getAnchorPane().getChildren().add(rectangle);
     }
 
+    public void displayCell(int i, int j){
+        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
+        Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+
+        if(getValues()[i][j] == 1){
+            newRectangle.setStyle("-fx-fill: lightyellow; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+        }
+        else{
+            newRectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+        }
+        getAnchorPane().getChildren().remove(oldRectangle);
+        getAnchorPane().getChildren().add(newRectangle);
+    }
+
     public void initializeGrid(){
         populateGrid();
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
-                displayCell(i, j);
+                createCell(i, j);
             }
         }
     }
+
     public void compute(int i, int j){
 
         Rectangle rectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
