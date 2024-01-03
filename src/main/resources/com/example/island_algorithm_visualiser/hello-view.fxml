@@ -22,7 +22,7 @@
    <right>
       <BorderPane prefHeight="299.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <SplitPane dividerPositions="0.1" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="split_pane" dividerPositions="0.3" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
               <items>
                 <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
@@ -43,7 +43,7 @@
                         </Label>
                         <Button fx:id="generate_new_button" layoutX="150.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#generateNewButtonClick" text="Generate New Map" textAlignment="CENTER" />
                         <Button fx:id="start_button" layoutX="13.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#startButtonClick" text="Start" textAlignment="CENTER" />
-                        <Button fx:id="stop_button" layoutX="85.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#stopButtonClick" text="Stop" />
+                        <Button fx:id="reset_button" layoutX="85.0" layoutY="40.0" mnemonicParsing="false" onMouseClicked="#resetButtonClick" text="Reset" />
                         <CheckBox fx:id="DFS_CheckBox" layoutX="13.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#DFS_CheckBoxSelected" text="DFS" />
                         <CheckBox fx:id="BFS_CheckBox" layoutX="72.0" layoutY="110.0" mnemonicParsing="false" onMouseClicked="#BFS_CheckBoxSelected" text="BFS" />
                         <Label fx:id="invalid_selection_message" layoutX="150.0" layoutY="110.0" text="Please select an option" textFill="RED" visible="false">
@@ -56,6 +56,13 @@
                         <CheckBox fx:id = "speed_checkbox_2x" layoutX="72.0" layoutY="200" onMouseClicked="#speed2xSelected" text="2x" />
                         <Label fx:id="perimeter_title" layoutX="13.0" layoutY="230" text="Perimeter"/>
                         <CheckBox fx:id="show_perimeter_checkbox" layoutX="13.0" layoutY="250.0" mnemonicParsing="false" text="Show Largest Perimeter" />
+                        <Label fx:id="map_settings_title" layoutX="13.0" layoutY="280" text="Map Settings">
+                           <font>
+                              <Font name="Consolas" size="15.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="cell_size_title" layoutX="13.0" layoutY="310" text="Cell Size"/>
+                        <Slider fx:id="cell_size_slider" layoutX="13.0" layoutY="330" min = "30" max = "60" onMouseReleased="#cellSizeSliderReleased"/>
                      </children>
                   </AnchorPane>
                 <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="290.0">
@@ -73,6 +80,7 @@
                      </children></AnchorPane>
               </items>
             </SplitPane>
+
          </left>
          <right>
             <AnchorPane prefHeight="299.0" prefWidth="30.0" BorderPane.alignment="CENTER" />
