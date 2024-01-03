@@ -21,6 +21,7 @@ public class GridHandler extends Grid {
     private boolean BFS_Selected = false;
     private boolean duration1xSelected = false;
     private boolean duration2xSelected = false;
+    private boolean duration4xSelected = false;
     private boolean showPerimeterSelected = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited, Statistics statistics){
@@ -278,6 +279,7 @@ public class GridHandler extends Grid {
         visualizationRunning = true;
         if(duration1xSelected) duration = 30;
         else if(duration2xSelected) duration = 15;
+        else if(duration4xSelected) duration = 7;
         stagger = duration;
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
@@ -358,6 +360,6 @@ public class GridHandler extends Grid {
     public void setDuration2xSelected(boolean isSelected){
         duration2xSelected = isSelected;
     }
-
+    public void setDuration4xSelected(boolean isSelected) { duration4xSelected = isSelected; }
     public void setShowPerimeterSelected(boolean isSelected) { showPerimeterSelected = isSelected; }
 }

@@ -48,6 +48,8 @@
         @FXML
         private CheckBox speed_checkbox_2x;
         @FXML
+        private CheckBox speed_checkbox_4x;
+        @FXML
         private CheckBox show_perimeter_checkbox;
         @FXML
         private Slider cell_size_slider;
@@ -85,6 +87,7 @@
             gridHandler.setDFS_Selected(DFS_CheckBox.isSelected());
             gridHandler.setDuration1xSelected(speed_checkbox_1x.isSelected());
             gridHandler.setDuration2xSelected(speed_checkbox_2x.isSelected());
+            gridHandler.setDuration4xSelected(speed_checkbox_4x.isSelected());
             invalid_selection_message.setVisible(!BFS_CheckBox.isSelected() && !DFS_CheckBox.isSelected());
             if(!gridHandler.isVisualizationRunning() && (DFS_CheckBox.isSelected() || BFS_CheckBox.isSelected())){
                 gridHandler.visualize();
@@ -126,9 +129,16 @@
         @FXML
         public void speed1xSelected(MouseEvent event){
             speed_checkbox_2x.setSelected(false);
+            speed_checkbox_4x.setSelected(false);
         }
         @FXML
         public void speed2xSelected(MouseEvent event) {
+            speed_checkbox_1x.setSelected(false);
+            speed_checkbox_4x.setSelected(false);
+        }
+        @FXML
+        public void speed4xSelected(MouseEvent event) {
+            speed_checkbox_2x.setSelected(false);
             speed_checkbox_1x.setSelected(false);
         }
 

@@ -53,7 +53,8 @@
                         </Label>
                         <Label fx:id="speed_title" layoutX="13.0" layoutY="180.0" text="Speed"/>
                         <CheckBox fx:id="speed_checkbox_1x" layoutX="13.0" layoutY="200.0" onMouseClicked="#speed1xSelected" text="1x" />
-                        <CheckBox fx:id = "speed_checkbox_2x" layoutX="72.0" layoutY="200" onMouseClicked="#speed2xSelected" text="2x" />
+                        <CheckBox fx:id="speed_checkbox_2x" layoutX="72.0" layoutY="200.0" onMouseClicked="#speed2xSelected" text="2x" />
+                        <CheckBox fx:id="speed_checkbox_4x" layoutX="131" layoutY="200.0" onMouseClicked="#speed4xSelected" text = "4x" />
                         <Label fx:id="perimeter_title" layoutX="13.0" layoutY="230" text="Perimeter"/>
                         <CheckBox fx:id="show_perimeter_checkbox" layoutX="13.0" layoutY="250.0" mnemonicParsing="false" text="Show Largest Perimeter" />
                         <Label fx:id="map_settings_title" layoutX="13.0" layoutY="280" text="Map Settings">
