@@ -57,7 +57,7 @@ public class GridHandler extends Grid {
 
     public void createCell(int i, int j){
         Rectangle rectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
-        rectangle.setId(Integer.toString(i)+Integer.toString(j));
+        rectangle.setId(Integer.toString(getTilesAcross()*i + j));
 
         if(getValues()[i][j] == 1){
             rectangle.setStyle("-fx-fill: lightyellow; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
@@ -69,8 +69,9 @@ public class GridHandler extends Grid {
     }
 
     public void displayCell(int i, int j){
-        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
+        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
         Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+        newRectangle.setId(Integer.toString(getTilesAcross()*i + j));
 
         if(getValues()[i][j] == 1){
             newRectangle.setStyle("-fx-fill: lightyellow; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
@@ -93,26 +94,29 @@ public class GridHandler extends Grid {
 
     public void compute(int i, int j){
 
-        Rectangle rectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
-
+        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
         Rectangle newRectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
+        newRectangle.setId(Integer.toString(getTilesAcross()*i + j));
+
         newRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
-        getAnchorPane().getChildren().remove(rectangle);
+        getAnchorPane().getChildren().remove(oldRectangle);
         getAnchorPane().getChildren().add(newRectangle);
     }
 
     public void visualizeIteration(int i, int j){
 
-        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
+        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
         Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+        newRectangle.setId(Integer.toString(getTilesAcross()*i + j));
         newRectangle.setStyle("-fx-fill: red; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
         getAnchorPane().getChildren().remove(oldRectangle);
         getAnchorPane().getChildren().add(newRectangle);
 
         if(!(i == 0 && j == 0)){
             if(j != 0){
-                Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j-1));
+                Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j-1));
                 Rectangle newPrevRectangle = new Rectangle((j-1) * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+                newPrevRectangle.setId(Integer.toString(getTilesAcross()*i + j));
                 if(getValues()[i][j-1] == 1){
                     newPrevRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
                 }
@@ -123,8 +127,9 @@ public class GridHandler extends Grid {
                 getAnchorPane().getChildren().add(newPrevRectangle);
             }
             else{
-                Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i-1)+Integer.toString(getTilesAcross()-1));
+                Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + getTilesAcross()-1));
                 Rectangle newPrevRectangle = new Rectangle((getTilesAcross()-1) * getGridSize(), (i-1) * getGridSize(), getGridSize(), getGridSize());
+                newPrevRectangle.setId(Integer.toString(getTilesAcross()*i + getTilesAcross()-1));
                 if(getValues()[i-1][getTilesAcross()-1] == 1){
                     newPrevRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
                 }
@@ -146,7 +151,7 @@ public class GridHandler extends Grid {
             Pair<Integer, Integer> pos = maxIslandPerimeterPoints.get(a);
             int i = pos.getKey();
             int j = pos.getValue();
-            Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(i)+Integer.toString(j));
+            Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
             Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
             newRectangle.setStyle("-fx-fill: rgba(255,0,0,0.25); -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
             getAnchorPane().getChildren().remove(oldRectangle);
@@ -334,9 +339,10 @@ public class GridHandler extends Grid {
     }
 
     public void resetGrid(){
+        getAnchorPane().getChildren().clear();
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
-                displayCell(i, j);
+                createCell(i, j);
             }
         }
     }

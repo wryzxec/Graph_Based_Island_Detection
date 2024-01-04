@@ -3,10 +3,12 @@
     import javafx.beans.NamedArg;
     import javafx.fxml.FXML;
     import javafx.fxml.Initializable;
+    import javafx.scene.Node;
     import javafx.scene.control.*;
     import javafx.scene.input.MouseEvent;
     import javafx.scene.layout.AnchorPane;
     import javafx.scene.layout.BorderPane;
+    import javafx.scene.shape.Rectangle;
 
     import java.net.URL;
     import java.util.ResourceBundle;
@@ -66,6 +68,7 @@
             BFS_CheckBox.setDisable(false);
             speed_checkbox_1x.setDisable(false);
             speed_checkbox_2x.setDisable(false);
+            speed_checkbox_4x.setDisable(false);
             show_perimeter_checkbox.setDisable(false);
             cell_size_slider.setDisable(false);
         }
@@ -75,6 +78,7 @@
             BFS_CheckBox.setDisable(true);
             speed_checkbox_1x.setDisable(true);
             speed_checkbox_2x.setDisable(true);
+            speed_checkbox_4x.setDisable(true);
             show_perimeter_checkbox.setDisable(true);
             cell_size_slider.setDisable(true);
         }
@@ -89,15 +93,17 @@
             gridHandler.setDuration2xSelected(speed_checkbox_2x.isSelected());
             gridHandler.setDuration4xSelected(speed_checkbox_4x.isSelected());
             invalid_selection_message.setVisible(!BFS_CheckBox.isSelected() && !DFS_CheckBox.isSelected());
-            if(!gridHandler.isVisualizationRunning() && (DFS_CheckBox.isSelected() || BFS_CheckBox.isSelected())){
+            if(!gridHandler.isVisualizationRunning()){
                 gridHandler.visualize();
             }
         }
         @FXML
         void resetButtonClick(MouseEvent event){
+            if(gridHandler.isVisualizationRunning()){
+                gridHandler.stopVisualisation();
+            }
             enableSettingsChanges();
-            grid_pane.getChildren().clear();
-            gridHandler.stopVisualisation();
+            gridHandler.resetGrid();
             gridHandler.resetVisited();
             gridHandler.resetGrid();
             statistics.resetStats();
@@ -164,7 +170,6 @@
             statistics = new Statistics(text_pane, island_counter_label, cells_visited_label, island_area_Label, water_area_label, max_island_perimeter_label);
             values = new int[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
             visited = new boolean[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-            grid = new Grid(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
             gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
             gridHandler.setDuration1xSelected(true);
             speed_checkbox_1x.setSelected(true);
