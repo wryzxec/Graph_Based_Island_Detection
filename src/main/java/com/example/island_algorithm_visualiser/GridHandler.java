@@ -159,6 +159,48 @@ public class GridHandler extends Grid {
         }
     }
 
+    public void removeLakes(){
+        List<Pair<Integer, Integer>> withoutLakes = new ArrayList<>();
+        Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
+        List<Pair<Integer, Integer>> dirs = new ArrayList<>();
+        boolean[][] visited = new boolean[getTilesDown()][getTilesAcross()];
+
+        dirs.add(new Pair<>(1,0));
+        dirs.add(new Pair<>(-1,0));
+        dirs.add(new Pair<>(0,1));
+        dirs.add(new Pair<>(0,-1));
+        dirs.add(new Pair<>(1,1));
+        dirs.add(new Pair<>(1,-1));
+        dirs.add(new Pair<>(-1,1));
+        dirs.add(new Pair<>(-1,-1));
+
+        Pair<Integer, Integer> start = getStatistics().getMaxPerimeterPoints().get(0);
+        withoutLakes.add(start);
+        toSearch.add(start);
+
+        while(!toSearch.isEmpty()){
+            Pair<Integer,Integer> pos = toSearch.poll();
+            if(!isOutOfBounds(pos.getKey(), pos.getValue())){
+                visited[pos.getKey()][pos.getValue()] = true;
+            }
+            for(Pair<Integer, Integer> dir : dirs){
+                int a = pos.getKey() + dir.getKey();
+                int b = pos.getValue() + dir.getValue();
+                Pair<Integer, Integer> nextPos = new Pair<>(a, b);
+                if(!isOutOfBounds(a, b) && getStatistics().getMaxPerimeterPoints().contains(nextPos) && !visited[a][b]){
+                    visited[a][b] = true;
+                    toSearch.add(nextPos);
+                    withoutLakes.add(nextPos);
+                }
+                if(isOutOfBounds(a, b) && getStatistics().getMaxPerimeterPoints().contains(nextPos)){
+                    getStatistics().getMaxPerimeterPoints().remove(nextPos);
+                    toSearch.add(nextPos);
+                }
+            }
+        }
+        getStatistics().setMaxPerimeterPoints(withoutLakes);
+    }
+
     public boolean isOutOfBounds(int i, int j){
         return i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross();
     }
@@ -168,6 +210,10 @@ public class GridHandler extends Grid {
             stagger += duration;
             keyframe = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
                 getStatistics().incrementIslandPerimeter();
+                getStatistics().addPerimeterPoint(new Pair<>(i, j));
+                if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
+                    getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
+                }
                 getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
                 getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
             });
@@ -184,7 +230,6 @@ public class GridHandler extends Grid {
                     getStatistics().incrementIslandPerimeter();
                     getStatistics().addPerimeterPoint(new Pair<>(i, j));
                     if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
-                        getStatistics().setMaxIslandPerimeter(getStatistics().getIslandPerimeter());
                         getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
                     }
                     getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
@@ -194,7 +239,6 @@ public class GridHandler extends Grid {
             timeline.getKeyFrames().add(keyframe);
             return;
         }
-
 
         getVisited()[i][j] = true;
         stagger += duration;
@@ -241,8 +285,13 @@ public class GridHandler extends Grid {
                     stagger += duration;
                     keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
                         getStatistics().incrementIslandPerimeter();
+                        getStatistics().addPerimeterPoint(new Pair<>(a,b));
+                        if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
+                            getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
+                        }
                         getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
                         getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
+
                     });
                     timeline.getKeyFrames().add(keyframe);
                 }
@@ -262,11 +311,10 @@ public class GridHandler extends Grid {
                 else if(!isOutOfBounds(a, b) && getValues()[a][b] == 0 && !getVisited()[a][b]){
                     stagger += duration;
                     keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
-                        if(!getStatistics().getPerimeterPoints().contains(new Pair<>(a, b))){
+                        if(!getStatistics().getPerimeterPoints().contains(new Pair<>(a,b))){
                             getStatistics().incrementIslandPerimeter();
-                            getStatistics().addPerimeterPoint(new Pair<>(a, b));
+                            getStatistics().addPerimeterPoint(new Pair<>(a,b));
                             if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
-                                getStatistics().setMaxIslandPerimeter(getStatistics().getIslandPerimeter());
                                 getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
                             }
                             getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
@@ -326,6 +374,7 @@ public class GridHandler extends Grid {
         timeline.play();
         timeline.setOnFinished(event -> {
             if(showPerimeterSelected) {
+                removeLakes();
                 visualizeMaxPerimeter();
             }
             visualizationRunning = false;
