@@ -77,9 +77,10 @@
                         </Label>
                         <Label fx:id="island_counter_label" layoutX="13.0" layoutY="40" text="Island Count: 0"/>
                         <Label fx:id="cells_visited_label" layoutX="13.0" layoutY="70.0" text="Cells Visited: 0"/>
-                        <Label fx:id="island_area_Label" layoutX="13.0" layoutY="100.0" text="Total Island Area: 0"/>
+                        <Label fx:id="island_area_label" layoutX="13.0" layoutY="100.0" text="Total Island Area: 0"/>
                         <Label fx:id="water_area_label" layoutX="13.0" layoutY="130.0" text="Total Water Area: 0"/>
-                        <Label fx:id="max_island_perimeter_label" layoutX="13.0" layoutY="160.0" text="Max Island Perimeter: 0"/>
+                        <Label fx:id="lake_area_label" layoutX="13.0" layoutY="160.0" text="Total Lake Area: 0"/>
+                        <Label fx:id="max_island_perimeter_label" layoutX="13.0" layoutY="190.0" text="Max Island Perimeter: 0"/>
                      </children></AnchorPane>
               </items>
             </SplitPane>

@@ -1,15 +1,11 @@
     package com.example.island_algorithm_visualiser;
 
-    import javafx.beans.NamedArg;
     import javafx.fxml.FXML;
     import javafx.fxml.Initializable;
-    import javafx.scene.Node;
     import javafx.scene.control.*;
     import javafx.scene.input.MouseEvent;
     import javafx.scene.layout.AnchorPane;
     import javafx.scene.layout.BorderPane;
-    import javafx.scene.shape.Rectangle;
-
     import java.net.URL;
     import java.util.ResourceBundle;
 
@@ -34,9 +30,11 @@
         @FXML
         private Label cells_visited_label;
         @FXML
-        private Label island_area_Label;
+        private Label island_area_label;
         @FXML
         private Label water_area_label;
+        @FXML
+        private Label lake_area_label;
         @FXML
         private Label max_island_perimeter_label;
         @FXML
@@ -172,7 +170,7 @@
             bg_pane.setStyle("-fx-background-color: lightgrey;");
 
             gridSize = (int) cell_size_slider.getValue();
-            statistics = new Statistics(text_pane, island_counter_label, cells_visited_label, island_area_Label, water_area_label, max_island_perimeter_label);
+            statistics = new Statistics(text_pane, island_counter_label, cells_visited_label, island_area_label, water_area_label, max_island_perimeter_label, lake_area_label);
             values = new int[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
             visited = new boolean[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
             gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);

@@ -11,7 +11,6 @@ import java.util.*;
 
 public class GridHandler extends Grid {
 
-
     private Timeline timeline;
     private KeyFrame keyframe;
     private int duration;
@@ -193,6 +192,8 @@ public class GridHandler extends Grid {
                 }
             }
         }
+        getStatistics().setLakeArea(getStatistics().getLakePoints().size());
+        getStatistics().updateLakeAreaLabel(getStatistics().getLakeArea());
     }
 
 
