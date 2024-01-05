@@ -22,7 +22,7 @@
    <right>
       <BorderPane prefHeight="299.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <SplitPane fx:id="split_pane" dividerPositions="0.3" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="split_pane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
               <items>
                 <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
@@ -57,13 +57,15 @@
                         <CheckBox fx:id="speed_checkbox_4x" layoutX="131" layoutY="200.0" onMouseClicked="#speed4xSelected" text = "4x" />
                         <Label fx:id="perimeter_title" layoutX="13.0" layoutY="230" text="Perimeter"/>
                         <CheckBox fx:id="show_perimeter_checkbox" layoutX="13.0" layoutY="250.0" mnemonicParsing="false" text="Show Largest Perimeter" />
-                        <Label fx:id="map_settings_title" layoutX="13.0" layoutY="280" text="Map Settings">
+                        <Label fx:id="lakes_title" layoutX="13.0" layoutY="280" text="Lakes"/>
+                        <CheckBox fx:id="show_lakes_checkbox" layoutX="13.0" layoutY="300" text="Show Lakes"/>
+                        <Label fx:id="map_settings_title" layoutX="13.0" layoutY="330" text="Map Settings">
                            <font>
                               <Font name="Consolas" size="15.0" />
                            </font>
                         </Label>
-                        <Label fx:id="cell_size_title" layoutX="13.0" layoutY="310" text="Cell Size"/>
-                        <Slider fx:id="cell_size_slider" layoutX="13.0" layoutY="330" min = "30" max = "60" onMouseReleased="#cellSizeSliderReleased"/>
+                        <Label fx:id="cell_size_title" layoutX="13.0" layoutY="360" text="Cell Size"/>
+                        <Slider fx:id="cell_size_slider" layoutX="13.0" layoutY="380" min = "30" max = "60" onMouseReleased="#cellSizeSliderReleased"/>
                      </children>
                   </AnchorPane>
                 <AnchorPane fx:id="text_pane" minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="290.0">

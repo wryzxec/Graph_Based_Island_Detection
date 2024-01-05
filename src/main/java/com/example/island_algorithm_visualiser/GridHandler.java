@@ -23,6 +23,7 @@ public class GridHandler extends Grid {
     private boolean duration2xSelected = false;
     private boolean duration4xSelected = false;
     private boolean showPerimeterSelected = false;
+    private boolean showLakesSelected = false;
 
     public GridHandler(double width, double height, int gridSize, AnchorPane anchorPane, int[][] values, boolean[][] visited, Statistics statistics){
         super(width, height, gridSize, anchorPane, values, visited, statistics);
@@ -36,7 +37,7 @@ public class GridHandler extends Grid {
         getValues()[i][j] = 1;
 
         Random rnd = new Random();
-        if(rnd.nextDouble() < 0.4){
+        if(rnd.nextDouble() < 0.45){
             generateIsland(i+1, j);
             generateIsland(i-1, j);
             generateIsland(i, j+1);
@@ -66,21 +67,6 @@ public class GridHandler extends Grid {
             rectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
         }
         getAnchorPane().getChildren().add(rectangle);
-    }
-
-    public void displayCell(int i, int j){
-        Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
-        Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
-        newRectangle.setId(Integer.toString(getTilesAcross()*i + j));
-
-        if(getValues()[i][j] == 1){
-            newRectangle.setStyle("-fx-fill: lightyellow; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
-        }
-        else{
-            newRectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
-        }
-        getAnchorPane().getChildren().remove(oldRectangle);
-        getAnchorPane().getChildren().add(newRectangle);
     }
 
     public void initializeGrid(){
@@ -145,10 +131,8 @@ public class GridHandler extends Grid {
 
     public void visualizeMaxPerimeter(){
         List<Pair<Integer, Integer>> maxIslandPerimeterPoints = getStatistics().getMaxPerimeterPoints();
-        int n = maxIslandPerimeterPoints.size();
 
-        for(int a = 0; a < n; a++){
-            Pair<Integer, Integer> pos = maxIslandPerimeterPoints.get(a);
+        for(Pair<Integer, Integer> pos : maxIslandPerimeterPoints){
             int i = pos.getKey();
             int j = pos.getValue();
             Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
@@ -159,7 +143,60 @@ public class GridHandler extends Grid {
         }
     }
 
-    public void removeLakes(){
+    public void visualizeLakes(){
+        List<Pair<Integer,Integer>> lakePoints = getStatistics().getLakePoints();
+        for(Pair<Integer,Integer> pos : lakePoints){
+            int i = pos.getKey();
+            int j = pos.getValue();
+            Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
+            Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+            newRectangle.setStyle("-fx-fill: rgba(0,0,255,0.25); -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+            getAnchorPane().getChildren().remove(oldRectangle);
+            getAnchorPane().getChildren().add(newRectangle);
+        }
+    }
+    public void identifyLakePointsAndRemoveLakesFromPerimeter(){
+        List<Pair<Integer, Integer>> lakePoints = new ArrayList<>();
+        List<Pair<Integer, Integer>> initPerimeterPoints = getStatistics().getPerimeterPoints();
+        removeLakePointsFromPerimeterPoints();
+
+        for(Pair<Integer, Integer> pos : initPerimeterPoints){
+            if(!getStatistics().getPerimeterPoints().contains(pos) && !isOutOfBounds(pos.getKey(), pos.getValue())){
+                lakePoints.add(pos);
+            }
+        }
+
+        boolean[][] visited = new boolean[getTilesDown()][getTilesAcross()];
+        List<Pair<Integer, Integer>> dirs = new ArrayList<>();
+        dirs.add(new Pair<>(1,0));
+        dirs.add(new Pair<>(-1,0));
+        dirs.add(new Pair<>(0,1));
+        dirs.add(new Pair<>(0,-1));
+
+        Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
+        for(Pair<Integer, Integer> pos: lakePoints){
+            toSearch.add(pos);
+            visited[pos.getKey()][pos.getValue()] = true;
+            getStatistics().addLakePoint(pos);
+        }
+        while(!toSearch.isEmpty()){
+            Pair<Integer, Integer> pos = toSearch.poll();
+            visited[pos.getKey()][pos.getValue()] = true;
+            for(Pair<Integer, Integer> dir : dirs){
+                int a = pos.getKey() + dir.getKey();
+                int b = pos.getValue() + dir.getValue();
+                Pair<Integer, Integer> nextPos = new Pair<>(a, b);
+                if(!isOutOfBounds(a, b) && getValues()[a][b] == 0 && !visited[a][b]){
+                    visited[a][b] = true;
+                    toSearch.add(nextPos);
+                    getStatistics().addLakePoint(nextPos);
+                }
+            }
+        }
+    }
+
+
+    public void removeLakePointsFromPerimeterPoints(){
         List<Pair<Integer, Integer>> withoutLakes = new ArrayList<>();
         Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
@@ -174,8 +211,10 @@ public class GridHandler extends Grid {
         dirs.add(new Pair<>(-1,1));
         dirs.add(new Pair<>(-1,-1));
 
-        Pair<Integer, Integer> start = getStatistics().getMaxPerimeterPoints().get(0);
-        withoutLakes.add(start);
+        Pair<Integer, Integer> start = getStatistics().getPerimeterPoints().get(0);
+        if(!isOutOfBounds(start.getKey(), start.getValue())){
+            withoutLakes.add(start);
+        }
         toSearch.add(start);
 
         while(!toSearch.isEmpty()){
@@ -187,18 +226,18 @@ public class GridHandler extends Grid {
                 int a = pos.getKey() + dir.getKey();
                 int b = pos.getValue() + dir.getValue();
                 Pair<Integer, Integer> nextPos = new Pair<>(a, b);
-                if(!isOutOfBounds(a, b) && getStatistics().getMaxPerimeterPoints().contains(nextPos) && !visited[a][b]){
+                if(!isOutOfBounds(a, b) && getStatistics().getPerimeterPoints().contains(nextPos) && !visited[a][b]){
                     visited[a][b] = true;
                     toSearch.add(nextPos);
                     withoutLakes.add(nextPos);
                 }
-                if(isOutOfBounds(a, b) && getStatistics().getMaxPerimeterPoints().contains(nextPos)){
-                    getStatistics().getMaxPerimeterPoints().remove(nextPos);
+                if(isOutOfBounds(a, b) && getStatistics().getPerimeterPoints().contains(nextPos)){
+                    getStatistics().getPerimeterPoints().remove(nextPos);
                     toSearch.add(nextPos);
                 }
             }
         }
-        getStatistics().setMaxPerimeterPoints(withoutLakes);
+        getStatistics().setPerimeterPoints(withoutLakes);
     }
 
     public boolean isOutOfBounds(int i, int j){
@@ -211,9 +250,6 @@ public class GridHandler extends Grid {
             keyframe = new KeyFrame(Duration.millis((duration*(startI*getTilesAcross() + startJ) + stagger)), e -> {
                 getStatistics().incrementIslandPerimeter();
                 getStatistics().addPerimeterPoint(new Pair<>(i, j));
-                if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
-                    getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
-                }
                 getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
                 getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
             });
@@ -229,9 +265,6 @@ public class GridHandler extends Grid {
                 if(!getStatistics().getPerimeterPoints().contains(new Pair<>(i, j))){
                     getStatistics().incrementIslandPerimeter();
                     getStatistics().addPerimeterPoint(new Pair<>(i, j));
-                    if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
-                        getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
-                    }
                     getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
                     getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
                 }
@@ -251,20 +284,20 @@ public class GridHandler extends Grid {
         });
         timeline.getKeyFrames().add(keyframe);
 
-        DFS(i+1, j, startI, startJ);
-        DFS(i-1, j, startI, startJ);
         DFS(i, j+1, startI, startJ);
         DFS(i, j-1, startI, startJ);
+        DFS(i+1, j, startI, startJ);
+        DFS(i-1, j, startI, startJ);
     }
 
     public void BFS(int i, int j){
 
         Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
-        dirs.add(new Pair<>(1,0));
-        dirs.add(new Pair<>(0,1));
         dirs.add(new Pair<>(-1,0));
         dirs.add(new Pair<>(0,-1));
+        dirs.add(new Pair<>(1,0));
+        dirs.add(new Pair<>(0,1));
 
         keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
             getStatistics().incrementVisitedCount();
@@ -286,9 +319,6 @@ public class GridHandler extends Grid {
                     keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
                         getStatistics().incrementIslandPerimeter();
                         getStatistics().addPerimeterPoint(new Pair<>(a,b));
-                        if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
-                            getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
-                        }
                         getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
                         getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
 
@@ -314,9 +344,6 @@ public class GridHandler extends Grid {
                         if(!getStatistics().getPerimeterPoints().contains(new Pair<>(a,b))){
                             getStatistics().incrementIslandPerimeter();
                             getStatistics().addPerimeterPoint(new Pair<>(a,b));
-                            if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
-                                getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
-                            }
                             getStatistics().setMaxIslandPerimeter(Math.max(getStatistics().getIslandPerimeter(), getStatistics().getMaxIslandPerimeter()));
                             getStatistics().updateMaxIslandPerimeterLabel(getStatistics().getMaxIslandPerimeter());
                         }
@@ -334,6 +361,9 @@ public class GridHandler extends Grid {
         else if(duration2xSelected) duration = 15;
         else if(duration4xSelected) duration = 7;
         stagger = duration;
+
+        getStatistics().setLakePoints(new ArrayList<>());
+
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
                 int startX = i;
@@ -357,9 +387,23 @@ public class GridHandler extends Grid {
 
                     if(DFS_Selected && !BFS_Selected){
                         DFS(i,j,startX,startY);
+                        keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                            identifyLakePointsAndRemoveLakesFromPerimeter();
+                            if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
+                                getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
+                            }
+                        });
+                        timeline.getKeyFrames().add(keyframe);
                     }
                     else if(BFS_Selected && !DFS_Selected){
                         BFS(i, j);
+                        keyframe = new KeyFrame(Duration.millis((duration*(i*getTilesAcross() + j) + stagger)), e -> {
+                            identifyLakePointsAndRemoveLakesFromPerimeter();
+                            if(getStatistics().getIslandPerimeter() >= getStatistics().getMaxIslandPerimeter()){
+                                getStatistics().setMaxPerimeterPoints(getStatistics().getPerimeterPoints());
+                            }
+                        });
+                        timeline.getKeyFrames().add(keyframe);
                     }
                 }
                 if(getValues()[i][j] == 0 && !getVisited()[i][j]){
@@ -374,8 +418,10 @@ public class GridHandler extends Grid {
         timeline.play();
         timeline.setOnFinished(event -> {
             if(showPerimeterSelected) {
-                removeLakes();
                 visualizeMaxPerimeter();
+            }
+            if(showLakesSelected) {
+                visualizeLakes();
             }
             visualizationRunning = false;
         });
@@ -403,18 +449,11 @@ public class GridHandler extends Grid {
         timeline.stop();
         visualizationRunning = false;
     }
-    public void setBFS_Selected(boolean isSelected){
-        BFS_Selected = isSelected;
-    }
-    public void setDFS_Selected(boolean isSelected){
-        DFS_Selected = isSelected;
-    }
-    public void setDuration1xSelected(boolean isSelected){
-        duration1xSelected = isSelected;
-    }
-    public void setDuration2xSelected(boolean isSelected){
-        duration2xSelected = isSelected;
-    }
+    public void setBFS_Selected(boolean isSelected){ BFS_Selected = isSelected; }
+    public void setDFS_Selected(boolean isSelected){ DFS_Selected = isSelected; }
+    public void setDuration1xSelected(boolean isSelected){ duration1xSelected = isSelected; }
+    public void setDuration2xSelected(boolean isSelected){ duration2xSelected = isSelected; }
     public void setDuration4xSelected(boolean isSelected) { duration4xSelected = isSelected; }
     public void setShowPerimeterSelected(boolean isSelected) { showPerimeterSelected = isSelected; }
+    public void setShowLakesSelected(boolean isSelected) { showLakesSelected = isSelected; }
 }

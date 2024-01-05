@@ -54,6 +54,8 @@
         @FXML
         private CheckBox show_perimeter_checkbox;
         @FXML
+        private CheckBox show_lakes_checkbox;
+        @FXML
         private Slider cell_size_slider;
 
         private Grid grid;
@@ -70,9 +72,9 @@
             speed_checkbox_2x.setDisable(false);
             speed_checkbox_4x.setDisable(false);
             show_perimeter_checkbox.setDisable(false);
+            show_lakes_checkbox.setDisable(false);
             cell_size_slider.setDisable(false);
         }
-
         public void disableSettingsChanges(){
             DFS_CheckBox.setDisable(true);
             BFS_CheckBox.setDisable(true);
@@ -80,20 +82,24 @@
             speed_checkbox_2x.setDisable(true);
             speed_checkbox_4x.setDisable(true);
             show_perimeter_checkbox.setDisable(true);
+            show_lakes_checkbox.setDisable(true);
             cell_size_slider.setDisable(true);
         }
-
-        @FXML
-        void startButtonClick(MouseEvent event) {
-            disableSettingsChanges();
-            gridHandler.setShowPerimeterSelected(show_perimeter_checkbox.isSelected());
+        public void updateUserSelections(){
             gridHandler.setBFS_Selected(BFS_CheckBox.isSelected());
             gridHandler.setDFS_Selected(DFS_CheckBox.isSelected());
             gridHandler.setDuration1xSelected(speed_checkbox_1x.isSelected());
             gridHandler.setDuration2xSelected(speed_checkbox_2x.isSelected());
             gridHandler.setDuration4xSelected(speed_checkbox_4x.isSelected());
-            invalid_selection_message.setVisible(!BFS_CheckBox.isSelected() && !DFS_CheckBox.isSelected());
-            if(!gridHandler.isVisualizationRunning()){
+            gridHandler.setShowPerimeterSelected(show_perimeter_checkbox.isSelected());
+            gridHandler.setShowLakesSelected(show_lakes_checkbox.isSelected());
+            invalid_selection_message.setVisible(!DFS_CheckBox.isSelected() && !BFS_CheckBox.isSelected());
+        }
+        @FXML
+        void startButtonClick(MouseEvent event) {
+            disableSettingsChanges();
+            updateUserSelections();
+            if(!gridHandler.isVisualizationRunning() && (DFS_CheckBox.isSelected() || BFS_CheckBox.isSelected())){
                 gridHandler.visualize();
             }
         }
@@ -123,7 +129,6 @@
             gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
             gridHandler.initializeGrid();
         }
-
         @FXML
         public void DFS_CheckBoxSelected(MouseEvent event){
             BFS_CheckBox.setSelected(false);
@@ -171,9 +176,10 @@
             values = new int[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
             visited = new boolean[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
             gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
-            gridHandler.setDuration1xSelected(true);
-            speed_checkbox_1x.setSelected(true);
             DFS_CheckBox.setSelected(true);
+            speed_checkbox_1x.setSelected(true);
+            show_perimeter_checkbox.setSelected(true);
+            show_lakes_checkbox.setSelected(true);
             gridHandler.initializeGrid();
         }
     }

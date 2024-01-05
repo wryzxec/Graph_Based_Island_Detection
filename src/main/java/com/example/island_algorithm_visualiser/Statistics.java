@@ -22,6 +22,7 @@ public class Statistics {
     private int maxIslandPerimeter;
     private List<Pair<Integer, Integer>> perimeterPoints;
     private List<Pair<Integer, Integer>> maxPerimeterPoints;
+    private List<Pair<Integer, Integer>> lakePoints;
 
     public Statistics(AnchorPane anchorPane, Label islandCountLabel, Label cellsVisitedLabel, Label islandAreaLabel, Label waterAreaLabel, Label maxIslandPerimeterLabel){
         this.anchorPane = anchorPane;
@@ -49,6 +50,7 @@ public class Statistics {
     public void addPerimeterPoint(Pair<Integer, Integer> point){
         perimeterPoints.add(point);
     }
+    public void addLakePoint(Pair<Integer, Integer> point) { lakePoints.add(point); }
 
     public void resetStats(){
         islandCount = 0;
@@ -71,6 +73,7 @@ public class Statistics {
     public int getMaxIslandPerimeter() { return maxIslandPerimeter; }
     public List<Pair<Integer, Integer>> getPerimeterPoints() { return perimeterPoints; }
     public List<Pair<Integer, Integer>> getMaxPerimeterPoints() { return maxPerimeterPoints; }
+    public List<Pair<Integer, Integer>> getLakePoints() { return lakePoints; }
     public void incrementIslandCount() { islandCount++; }
     public void incrementVisitedCount() { visitedCount++; }
     public void incrementIslandArea() { islandArea++; }
@@ -80,4 +83,5 @@ public class Statistics {
     public void setMaxIslandPerimeter(int perimeter) { maxIslandPerimeter = perimeter; }
     public void setMaxPerimeterPoints(List<Pair<Integer, Integer>> points){ maxPerimeterPoints = points; }
     public void setPerimeterPoints(List<Pair<Integer, Integer>> points){ perimeterPoints = points; }
+    public void setLakePoints(List<Pair<Integer, Integer>> points){ lakePoints = points; }
 }
