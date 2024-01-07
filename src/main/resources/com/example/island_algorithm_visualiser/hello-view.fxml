@@ -22,7 +22,7 @@
    <right>
       <BorderPane prefHeight="299.0" prefWidth="200.0" BorderPane.alignment="CENTER">
          <left>
-            <SplitPane fx:id="split_pane" dividerPositions="0.5" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
+            <SplitPane fx:id="split_pane" dividerPositions="0.55" orientation="VERTICAL" prefHeight="300.0" prefWidth="300.0" BorderPane.alignment="CENTER">
               <items>
                 <AnchorPane fx:id="button_pane" minHeight="0.0" minWidth="0.0" prefHeight="83.0" prefWidth="265.0">
                      <children>
@@ -81,6 +81,9 @@
                         <Label fx:id="water_area_label" layoutX="13.0" layoutY="130.0" text="Total Water Area: 0"/>
                         <Label fx:id="lake_area_label" layoutX="13.0" layoutY="160.0" text="Total Lake Area: 0"/>
                         <Label fx:id="max_island_perimeter_label" layoutX="13.0" layoutY="190.0" text="Max Island Perimeter: 0"/>
+
+                        <Label layoutX="98.0" layoutY="290" text="Author: Lucas Bruckbauer" textFill="Gray"/>
+                        <Label layoutX="98.0" layoutY="310" text="GitHub: https://github.com/wryzxec" textFill="Gray"/>
                      </children></AnchorPane>
               </items>
             </SplitPane>

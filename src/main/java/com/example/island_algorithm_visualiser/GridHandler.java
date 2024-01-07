@@ -6,7 +6,6 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.util.Pair;
-
 import java.util.*;
 
 public class GridHandler extends Grid {
@@ -14,7 +13,7 @@ public class GridHandler extends Grid {
     private Timeline timeline;
     private KeyFrame keyframe;
     private int duration;
-    private int stagger;
+    private int stagger; // Ensures animation keyframes are produced in a linear fashion.
     private boolean visualizationRunning = false;
     private boolean DFS_Selected = false;
     private boolean BFS_Selected = false;
@@ -28,15 +27,21 @@ public class GridHandler extends Grid {
         super(width, height, gridSize, anchorPane, values, visited, statistics);
     }
 
+    /*
+    DFS Recursive algorithm which initializes the grid values. With each recursive call, there is a chance,
+    determined by the probability, that the next recursive call is/isn't called.
+    Island cells are given the value 1 whilst water cells are given the value 0.
+    */
     public void generateIsland(int i, int j){
+        double probability = 0.45;
 
-        if(i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross() || getValues()[i][j] == 1){
+        if(isOutOfBounds(i, j) || getValues()[i][j] == 1){
             return;
         }
         getValues()[i][j] = 1;
 
         Random rnd = new Random();
-        if(rnd.nextDouble() < 0.45){
+        if(rnd.nextDouble() < probability){
             generateIsland(i+1, j);
             generateIsland(i-1, j);
             generateIsland(i, j+1);
@@ -44,11 +49,16 @@ public class GridHandler extends Grid {
         }
     }
 
+    /*
+    Places 1x1 islands around the grid which then expand by the previous DFS algorithm.
+    Probability is small to avoid completely filling grid.
+    */
     public void populateGrid(){
         Random rnd = new Random();
+        double probability = 0.025;
         for(int i = 0; i < getTilesDown(); i++){
             for(int j = 0; j < getTilesAcross(); j++){
-                if(rnd.nextDouble() < 0.025){
+                if(rnd.nextDouble() < probability){
                     generateIsland(i, j);
                 }
             }
@@ -56,7 +66,7 @@ public class GridHandler extends Grid {
     }
 
     public void createCell(int i, int j){
-        Rectangle rectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
+        Rectangle rectangle = new Rectangle(j * getCellSize(), i * getCellSize(), getCellSize(), getCellSize());
         rectangle.setId(Integer.toString(getTilesAcross()*i + j));
 
         if(getValues()[i][j] == 1){
@@ -78,9 +88,8 @@ public class GridHandler extends Grid {
     }
 
     public void compute(int i, int j){
-
         Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
-        Rectangle newRectangle = new Rectangle(j * getGridSize(), i * getGridSize(), getGridSize(), getGridSize());
+        Rectangle newRectangle = new Rectangle(j * getCellSize(), i * getCellSize(), getCellSize(), getCellSize());
         newRectangle.setId(Integer.toString(getTilesAcross()*i + j));
 
         newRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
@@ -88,10 +97,14 @@ public class GridHandler extends Grid {
         getAnchorPane().getChildren().add(newRectangle);
     }
 
+    /*
+    Shows the location of the 'iterator' as it traverses the grid. This is done by updating the current cell with
+    the colour red and then restoring the previous cell with its original colour, with each iteration.
+    */
     public void visualizeIteration(int i, int j){
 
         Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
-        Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+        Rectangle newRectangle = new Rectangle(j * getCellSize(), (i) * getCellSize(), getCellSize(), getCellSize());
         newRectangle.setId(Integer.toString(getTilesAcross()*i + j));
         newRectangle.setStyle("-fx-fill: red; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
         getAnchorPane().getChildren().remove(oldRectangle);
@@ -100,7 +113,7 @@ public class GridHandler extends Grid {
         if(!(i == 0 && j == 0)){
             if(j != 0){
                 Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j-1));
-                Rectangle newPrevRectangle = new Rectangle((j-1) * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+                Rectangle newPrevRectangle = new Rectangle((j-1) * getCellSize(), (i) * getCellSize(), getCellSize(), getCellSize());
                 newPrevRectangle.setId(Integer.toString(getTilesAcross()*i + j));
                 if(getValues()[i][j-1] == 1){
                     newPrevRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
@@ -113,7 +126,7 @@ public class GridHandler extends Grid {
             }
             else{
                 Rectangle oldPrevRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + getTilesAcross()-1));
-                Rectangle newPrevRectangle = new Rectangle((getTilesAcross()-1) * getGridSize(), (i-1) * getGridSize(), getGridSize(), getGridSize());
+                Rectangle newPrevRectangle = new Rectangle((getTilesAcross()-1) * getCellSize(), (i-1) * getCellSize(), getCellSize(), getCellSize());
                 newPrevRectangle.setId(Integer.toString(getTilesAcross()*i + getTilesAcross()-1));
                 if(getValues()[i-1][getTilesAcross()-1] == 1){
                     newPrevRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
@@ -125,7 +138,6 @@ public class GridHandler extends Grid {
                 getAnchorPane().getChildren().add(newPrevRectangle);
             }
         }
-
     }
 
     public void visualizeMaxPerimeter(){
@@ -135,7 +147,7 @@ public class GridHandler extends Grid {
             int i = pos.getKey();
             int j = pos.getValue();
             Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
-            Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+            Rectangle newRectangle = new Rectangle(j * getCellSize(), (i) * getCellSize(), getCellSize(), getCellSize());
             newRectangle.setStyle("-fx-fill: rgba(255,0,0,0.25); -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
             getAnchorPane().getChildren().remove(oldRectangle);
             getAnchorPane().getChildren().add(newRectangle);
@@ -148,12 +160,18 @@ public class GridHandler extends Grid {
             int i = pos.getKey();
             int j = pos.getValue();
             Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
-            Rectangle newRectangle = new Rectangle(j * getGridSize(), (i) * getGridSize(), getGridSize(), getGridSize());
+            Rectangle newRectangle = new Rectangle(j * getCellSize(), (i) * getCellSize(), getCellSize(), getCellSize());
             newRectangle.setStyle("-fx-fill: rgba(0,0,255,0.25); -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
             getAnchorPane().getChildren().remove(oldRectangle);
             getAnchorPane().getChildren().add(newRectangle);
         }
     }
+
+    /*
+    If we find the difference between the perimeter points before and after the lakes are removed we can find
+    some but not all the lake points. To find the rest we can conduct a BFS search to expand over the lake area
+    and add all undiscovered lake points.
+    */
     public void identifyLakePointsAndRemoveLakesFromPerimeter(){
         List<Pair<Integer, Integer>> lakePoints = new ArrayList<>();
         List<Pair<Integer, Integer>> initPerimeterPoints = getStatistics().getPerimeterPoints();
@@ -196,13 +214,18 @@ public class GridHandler extends Grid {
         getStatistics().updateLakeAreaLabel(getStatistics().getLakeArea());
     }
 
-
+    /*
+    Within the identified points of each island perimeter will be points which are completely surrounded by land (lakes).
+    We can then locate one of the most outermost perimeter points and conduct a BFS traversal from this point.
+    This will remove all (inner) lakes as the BFS traversal will not reach them.
+    */
     public void removeLakePointsFromPerimeterPoints(){
         List<Pair<Integer, Integer>> withoutLakes = new ArrayList<>();
         Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
         boolean[][] visited = new boolean[getTilesDown()][getTilesAcross()];
 
+        //We must explore diagonals too as perimeter points can be joined vertically, horizontally and diagonally.
         dirs.add(new Pair<>(1,0));
         dirs.add(new Pair<>(-1,0));
         dirs.add(new Pair<>(0,1));
@@ -244,7 +267,13 @@ public class GridHandler extends Grid {
     public boolean isOutOfBounds(int i, int j){
         return i < 0 || i >= getTilesDown() || j < 0 || j >= getTilesAcross();
     }
-
+    /*
+    When determining if a cell forms part of the perimeter during a DFS/BFS search it must satisfy one of two conditions:
+        - It is a water cell
+        - It is out of the grid's bounds.
+    We must add out of bounds points to the islands perimeter points in order to identify lakes. However,
+    they must be removed after to avoid an index out of bounds error.
+    */
     public void DFS(int i, int j, int startI, int startJ){
         if(isOutOfBounds(i, j)){
             stagger += duration;
@@ -284,15 +313,15 @@ public class GridHandler extends Grid {
             compute(i,j);
         });
         timeline.getKeyFrames().add(keyframe);
-
+        // By taking the first direction to be up (or left) we can ensure the first encountered perimeter point is always
+        // on the outer edge of the island (not a lake).
+        DFS(i-1, j, startI, startJ);
+        DFS(i+1, j, startI, startJ);
         DFS(i, j+1, startI, startJ);
         DFS(i, j-1, startI, startJ);
-        DFS(i+1, j, startI, startJ);
-        DFS(i-1, j, startI, startJ);
     }
 
     public void BFS(int i, int j){
-
         Queue<Pair<Integer, Integer>> toSearch = new LinkedList<>();
         List<Pair<Integer, Integer>> dirs = new ArrayList<>();
         dirs.add(new Pair<>(-1,0));
@@ -424,6 +453,19 @@ public class GridHandler extends Grid {
             if(showLakesSelected) {
                 visualizeLakes();
             }
+            //Removes iterator visual from the last square on the grid.
+            int i = getTilesDown()-1;
+            int j = getTilesAcross()-1;
+            Rectangle oldRectangle = (Rectangle) getAnchorPane().lookup(Integer.toString(getTilesAcross()*i + j));
+            Rectangle newRectangle = new Rectangle(j * getCellSize(), (i) * getCellSize(), getCellSize(), getCellSize());
+            if (getValues()[i][j-1] == 1){
+                newRectangle.setStyle("-fx-fill: lightgreen; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+            }
+            else {
+                newRectangle.setStyle("-fx-fill: lightblue; -fx-stroke: rgba(0,0,0,0.25); -fx-stroke-width: 1;");
+            }
+            getAnchorPane().getChildren().remove(oldRectangle);
+            getAnchorPane().getChildren().add(newRectangle);
             visualizationRunning = false;
         });
     }
@@ -434,6 +476,10 @@ public class GridHandler extends Grid {
         setVisited(new boolean[m][n]);
     }
 
+    /*
+    To reset the grid all cells (rectangles) are cleared from the grid and new ones are created in their place.
+    The value of each cell is determined by the values array.
+    */
     public void resetGrid(){
         getAnchorPane().getChildren().clear();
         for(int i = 0; i < getTilesDown(); i++){

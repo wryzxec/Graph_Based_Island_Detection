@@ -11,6 +11,7 @@
 
     public class Controller implements Initializable {
 
+        //Initialize UI components.
         @FXML
         private BorderPane bg_pane;
         @FXML
@@ -57,7 +58,7 @@
         private Slider cell_size_slider;
 
         private Grid grid;
-        private int gridSize;
+        private int cellSize;
         private int[][] values;
         private boolean[][] visited;
         private GridHandler gridHandler;
@@ -83,6 +84,7 @@
             show_lakes_checkbox.setDisable(true);
             cell_size_slider.setDisable(true);
         }
+        //Checks to see what settings the user has selected and updates the gridHandler class with the choices.
         public void updateUserSelections(){
             gridHandler.setBFS_Selected(BFS_CheckBox.isSelected());
             gridHandler.setDFS_Selected(DFS_CheckBox.isSelected());
@@ -116,15 +118,15 @@
         @FXML
         void generateNewButtonClick(MouseEvent event) {
             enableSettingsChanges();
-            gridSize = (int) cell_size_slider.getValue();
+            cellSize = (int) cell_size_slider.getValue();
             if(gridHandler.isVisualizationRunning()){
                 gridHandler.stopVisualisation();
             }
             statistics.resetStats();
             grid_pane.getChildren().clear();
-            values = new int[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-            visited = new boolean[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-            gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
+            values = new int[(int) grid_pane.getPrefHeight() / cellSize][(int) grid_pane.getPrefWidth() / cellSize];
+            visited = new boolean[(int) grid_pane.getPrefHeight() / cellSize][(int) grid_pane.getPrefWidth() / cellSize];
+            gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), cellSize, grid_pane, values, visited, statistics);
             gridHandler.initializeGrid();
         }
         @FXML
@@ -153,13 +155,13 @@
 
         @FXML
         public void cellSizeSliderReleased(MouseEvent event){
-            if(gridSize != (int) cell_size_slider.getValue()){
-                gridSize = (int) cell_size_slider.getValue();
+            if(cellSize != (int) cell_size_slider.getValue()){
+                cellSize = (int) cell_size_slider.getValue();
                 statistics.resetStats();
                 grid_pane.getChildren().clear();
-                values = new int[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-                visited = new boolean[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-                gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
+                values = new int[(int) grid_pane.getPrefHeight() / cellSize][(int) grid_pane.getPrefWidth() / cellSize];
+                visited = new boolean[(int) grid_pane.getPrefHeight() / cellSize][(int) grid_pane.getPrefWidth() / cellSize];
+                gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), cellSize, grid_pane, values, visited, statistics);
                 gridHandler.initializeGrid();
             }
         }
@@ -169,11 +171,11 @@
             grid_pane.setStyle("-fx-background-color: lightgrey;");
             bg_pane.setStyle("-fx-background-color: lightgrey;");
 
-            gridSize = (int) cell_size_slider.getValue();
+            cellSize = (int) cell_size_slider.getValue();
             statistics = new Statistics(text_pane, island_counter_label, cells_visited_label, island_area_label, water_area_label, max_island_perimeter_label, lake_area_label);
-            values = new int[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-            visited = new boolean[(int) grid_pane.getPrefHeight() / gridSize][(int) grid_pane.getPrefWidth() / gridSize];
-            gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), gridSize, grid_pane, values, visited, statistics);
+            values = new int[(int) grid_pane.getPrefHeight() / cellSize][(int) grid_pane.getPrefWidth() / cellSize];
+            visited = new boolean[(int) grid_pane.getPrefHeight() / cellSize][(int) grid_pane.getPrefWidth() / cellSize];
+            gridHandler = new GridHandler(grid_pane.getPrefWidth(), grid_pane.getPrefHeight(), cellSize, grid_pane, values, visited, statistics);
             DFS_CheckBox.setSelected(true);
             speed_checkbox_1x.setSelected(true);
             show_perimeter_checkbox.setSelected(true);
