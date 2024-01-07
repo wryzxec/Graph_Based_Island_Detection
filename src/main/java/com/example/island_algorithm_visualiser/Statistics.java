@@ -58,12 +58,14 @@ public class Statistics {
         islandCount = 0;
         visitedCount = 0;
         islandArea = 0;
+        lakeArea = 0;
         waterArea = 0;
         islandPerimeter = 0;
         maxIslandPerimeter = 0;
         updateIslandCountLabel(islandCount);
         updateVisitedCountLabel(visitedCount);
         updateIslandAreaLabel(islandArea);
+        updateLakeAreaLabel(lakeArea);
         updateWaterAreaLabel(waterArea);
         updateMaxIslandPerimeterLabel(maxIslandPerimeter);
     }
