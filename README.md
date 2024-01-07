@@ -37,4 +37,13 @@ Maps are randomly generated using a modified DFS algorithm. Maps are random and 
 ![map_gen_3](https://github.com/wryzxec/Island_Algorithm_Visualiser/assets/143660175/da204aa4-850e-456e-98e7-058a1f5e520e)
 
 ### Perimeter Visualisation
-![perimeter_visual_1](https://github.com/wryzxec/Island_Algorithm_Visualiser/assets/143660175/2614396c-cd18-4a99-8df6-cd6219313af1)
+The user can select for the program to highlight the island with the largest perimeter.
+
+![perimeter_visual_1](https://github.com/wryzxec/Island_Algorithm_Visualiser/assets/143660175/928c4d3a-e5ec-4a61-a3e2-ba0467489059)
+
+### Lake Visualisation
+The user can select for the program to hightlight all lakes within islands. Gaps between the grid border and islands are not considered as lakes.
+
+![lake_detection_1](https://github.com/wryzxec/Island_Algorithm_Visualiser/assets/143660175/4a446ee0-7166-48f5-8aeb-b943d551679b)
+
+
